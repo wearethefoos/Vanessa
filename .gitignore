@@ -1,0 +1,9 @@
+config/database.php
+config/local.php
+
+tmp/cache/models
+tmp/cache/persistent
+tmp/cache/views
+tmp/logs
+tmp/sessions
+tmp/tests
