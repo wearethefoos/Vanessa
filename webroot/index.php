@@ -46,6 +46,10 @@
 	if (!defined('APP_DIR')) {
 		define('APP_DIR', basename(dirname(dirname(__FILE__))));
 	}
+	
+	if (!defined('CAKE_CORE_INCLUDE_PATH')) {
+		define('CAKE_CORE_INCLUDE_PATH',  '..' . DS . 'libs' . DS . 'cakephp');
+	}
 
 /**
  * Editing below this line should NOT be necessary.
