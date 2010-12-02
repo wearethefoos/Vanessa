@@ -50,7 +50,7 @@ ini_set('display_errors', 1);
  *
  */
 	if (!defined('CAKE_CORE_INCLUDE_PATH')) {
-		define('CAKE_CORE_INCLUDE_PATH',  DS . 'Applications' . DS . 'XAMPP' . DS . 'xamppfiles' . DS . 'share' . DS . 'cakephp');
+		define('CAKE_CORE_INCLUDE_PATH',  '..' . DS . 'libs' . DS . 'cakephp');
 	}
 
 /**
