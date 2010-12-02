@@ -9,11 +9,6 @@ class CourseTestCase extends CakeTestCase {
 	function startTest() {
 		$this->Course =& ClassRegistry::init('Course');
 	}
-	
-	function testGetStudentsCourses() {
-		$count = count($this->Course->getStudentsCourses(1));
-		$this->assertEqual($count, 1);
-	}
 
 	function endTest() {
 		unset($this->Course);

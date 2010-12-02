@@ -95,27 +95,6 @@ class Course extends AppModel {
 			'insertQuery' => ''
 		)
 	);
-	
-	/**
-	 * Get the courses for a logged in student.
-	 * 
-	 * @param $student_id
-	 * @return array courses
-	 */
-	function getStudentsCourses($student_id=null) {
-		$courses = array();
-		if ($student_id) {
-			$courses = $this->StudentsCourse->find('first', array(
-				'conditions' => array(
-					'StudentsCourse.student_id' => $student_id,
-				),
-				'contain' => array(
-					'Course'
-				)
-			));
-		}
-		return $courses;
-	}
 
 }
 ?>
