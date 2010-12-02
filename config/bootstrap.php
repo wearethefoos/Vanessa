@@ -48,7 +48,4 @@
  * Inflector::rules('plural', array('rules' => array(), 'irregular' => array(), 'uninflected' => array()));
  *
  */
-if (file_exists(APP.'config/local.php')) {
-	include('local.php');
-}
 	include('constants.php');
