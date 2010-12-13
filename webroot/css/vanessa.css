@@ -119,7 +119,7 @@ h4 { font-weight: bold; font-size: 1.2em; }
 div.vanessa { background: url(../img/vanessa.png) 50% 50% no-repeat; width: 151px; height: 149px; }
 div.speech-hi { width: 62px; height: 77px; background: url(../img/speech-hi.png) 50% 50% no-repeat; }
 div.small-arrow { width: 71px; height: 28px; font-size: 20px; text-align: right; padding: 18px 18px; cursor: pointer; }
-div.small-arrow.blue { background: url(../img/small-arrow-blue.png) 50% 50% no-repeat; }
+div.small-arrow.blue { color: white; background: url(../img/small-arrow-blue.png) 50% 50% no-repeat; }
 ul.menu { list-style: none; }
 ul.menu li { width: 133px; height: 22px; padding: 32px 20px; text-align: center; margin-left: 35px; }
 ul.menu li.active { width: 149px; height: 15px; padding: 45px; margin-left: 11px; }

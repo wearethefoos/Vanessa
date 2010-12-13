@@ -27,6 +27,9 @@
 	</title>
 	<?php
 		echo $this->Html->meta('icon');
+		echo $this->Html->meta('description', $description);
+		echo $this->Html->meta('keywords', $keywords);
+		echo $this->Html->meta('author', 'W.R. de Vos');
 
 		echo $this->Html->css('cake.generic');
 		echo $this->Html->css('vanessa');
