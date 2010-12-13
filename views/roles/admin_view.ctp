@@ -21,21 +21,20 @@
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('Edit Role', true), array('action' => 'edit', $role['Role']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(__('Delete Role', true), array('action' => 'delete', $role['Role']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $role['Role']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(__('List Roles', true), array('action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Role', true), array('action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User', true), array('controller' => 'users', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(sprintf(__('Edit %s', true), __('Role', true)), array('action' => 'edit', $role['Role']['id'])); ?> </li>
+		<li><?php echo $this->Html->link(sprintf(__('Delete %s', true), __('Role', true)), array('action' => 'delete', $role['Role']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $role['Role']['id'])); ?> </li>
+		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Roles', true)), array('action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Role', true)), array('action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Users', true)), array('controller' => 'users', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('User', true)), array('controller' => 'users', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
 <div class="related">
-	<h3><?php __('Related Users');?></h3>
+	<h3><?php printf(__('Related %s', true), __('Users', true));?></h3>
 	<?php if (!empty($role['User'])):?>
 	<table cellpadding = "0" cellspacing = "0">
 	<tr>
 		<th><?php __('Id'); ?></th>
-		<th><?php __('Student Id'); ?></th>
 		<th><?php __('Username'); ?></th>
 		<th><?php __('Password'); ?></th>
 		<th><?php __('Email'); ?></th>
@@ -58,7 +57,6 @@
 		?>
 		<tr<?php echo $class;?>>
 			<td><?php echo $user['id'];?></td>
-			<td><?php echo $user['student_id'];?></td>
 			<td><?php echo $user['username'];?></td>
 			<td><?php echo $user['password'];?></td>
 			<td><?php echo $user['email'];?></td>
@@ -81,7 +79,7 @@
 
 	<div class="actions">
 		<ul>
-			<li><?php echo $this->Html->link(__('New User', true), array('controller' => 'users', 'action' => 'add'));?> </li>
+			<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('User', true)), array('controller' => 'users', 'action' => 'add'));?> </li>
 		</ul>
 	</div>
 </div>

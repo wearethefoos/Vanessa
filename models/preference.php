@@ -43,9 +43,9 @@ class Preference extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
-		'ActivityGroup' => array(
-			'className' => 'ActivityGroup',
-			'foreignKey' => 'activity_group_id',
+		'Activity' => array(
+			'className' => 'Activity',
+			'foreignKey' => 'activity_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
@@ -108,11 +108,11 @@ class Preference extends AppModel {
 	}
 	
 	public function createNewPreference($preference, $unwantedness) {
-		$course_id = $this->getCourseFromActivityGroupId($preference);
+		$course_id = $this->getCourseFromActivityId($preference);
 		$student_group_id = $this->getStudentsGroupIdForThisCourse($course_id);
 		return array(
 			'student_group_id' => $student_group_id,
-			'activity_group_id' => $preference,
+			'activity_id' => $preference,
 			'unwantedness' => $unwantedness
 		);
 	}
@@ -120,8 +120,8 @@ class Preference extends AppModel {
 	/**
 	 * Get the course for this activity.
 	 */
-	public function getCourseFromActivityGroupId($activity_group_id) {
-		if ($course_id = $this->ActivityGroup->getCourseIdFromId($activity_group_id)) {
+	public function getCourseFromActivityId($activity_id) {
+		if ($course_id = $this->Activity->getCourseIdFromId($activity_id)) {
 			return $course_id;
 		} else {
 			return false;

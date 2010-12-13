@@ -12,3 +12,9 @@ Class Constant {
 }
 
 Constant::write('DISLIKE', 99);
+
+Constant::write('ADMIN', 8);
+Constant::write('SUPERVISOR', 9);
+Constant::write('TEACHER', 10);
+Constant::write('STUDENT', 11);
+

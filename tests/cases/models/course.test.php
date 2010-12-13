@@ -4,7 +4,18 @@
 App::import('Model', 'Course');
 
 class CourseTestCase extends CakeTestCase {
-	var $fixtures = array('app.course', 'app.user', 'app.activity', 'app.join_activity_group', 'app.student_group', 'app.join_student_group', 'app.preference', 'app.activity_group', 'app.role', 'app.security_log', 'app.student', 'app.students_course');
+	var $fixtures = array(
+		'app.course', 
+		'app.user', 
+		'app.activity', 
+		'app.student_group', 
+		'app.join_student_group', 
+		'app.preference', 
+		'app.role', 
+		'app.security_log', 
+		'app.student', 
+		'app.students_course'
+		);
 
 	function startTest() {
 		$this->Course =& ClassRegistry::init('Course');

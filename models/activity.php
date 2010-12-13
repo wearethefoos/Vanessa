@@ -64,22 +64,15 @@ class Activity extends AppModel {
 			'order' => ''
 		)
 	);
-
-	var $hasMany = array(
-		'JoinActivityGroup' => array(
-			'className' => 'JoinActivityGroup',
-			'foreignKey' => 'activity_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		),
-	);
+	
+	public function getCourseIdFromId($id=null) {
+		if ($id) {
+			if ($activity = $this->findById($id)) {
+				return $activity['Activity']['course_id'];
+			}
+		}
+		return false;
+	}
 
 }
 ?>
