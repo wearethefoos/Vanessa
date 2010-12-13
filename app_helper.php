@@ -1,6 +1,6 @@
 <?php
 /**
- * Application level View Helper
+ * Short description for file.
  *
  * This file is application-wide helper file. You can put all
  * application-wide helper-related methods here.
@@ -34,3 +34,4 @@ App::import('Helper', 'Helper', false);
  */
 class AppHelper extends Helper {
 }
+?>

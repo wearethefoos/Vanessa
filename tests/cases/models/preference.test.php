@@ -16,25 +16,29 @@ class PreferenceTestCase extends CakeTestCase {
 		'app.security_log', 
 		'app.activity', 
 		);
+	var $Session;
+	var $Controller;
 
 	function startTest() {
 		$this->Preference =& ClassRegistry::init('Preference');
+		
+		App::import('Core', 'Controller');
+		App::import('Core', 'SessionComponent');
+		$this->Controller = new Controller();		
+		$this->Session = new SessionComponent();
+		$this->Session->startup($this->Controller);
+		
+		$this->Session->write('Auth.User.student_id', 1);
 	}
 
 	function endTest() {
 		unset($this->Preference);
 		ClassRegistry::flush();
+		
+		$this->Session->delete('Auth.User');
 	}
 	
-	function testGetStudentIdFromSession() {
-		App::import('Core', 'Controller');
-		App::import('Core', 'SessionComponent');
-		$Controller = new Controller();		
-		$Session = new SessionComponent();
-		$Session->startup($Controller);
-
-		$Session->write('Auth.User.student_id', 1);
-		
+	function testGetStudentIdFromSession() {	
 		$this->assertEqual($this->Preference->getStudentIdFromSession(), 1);
 	}
 	

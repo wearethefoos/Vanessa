@@ -22,38 +22,68 @@
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
-		<?php __('CakePHP: the rapid development php framework:'); ?>
+		<?php __('Vanessa:'); ?>
 		<?php echo $title_for_layout; ?>
 	</title>
 	<?php
 		echo $this->Html->meta('icon');
 
 		echo $this->Html->css('cake.generic');
+		echo $this->Html->css('vanessa');
+		echo $this->Html->script('prototype.s2.min');
+		echo $this->Html->script('ui');
 
 		echo $scripts_for_layout;
 	?>
 </head>
 <body>
+	<div id="header">
+		<?php if ($this->Session->read('Auth.User')) {
+		    echo $this->Html->link(
+		        $this->Html->image('logout.png', array('alt' => __('logout', true))),
+		        '/logout',
+		        array('escape' => false)
+		    );
+		}
+		?>
+	</div>
 	<div id="container">
-		<div id="header">
-			<h1><?php echo $this->Html->link(__('CakePHP: the rapid development php framework', true), 'http://cakephp.org'); ?></h1>
-		</div>
+		
 		<div id="content">
-
+			
+        	<div id="content-heading">
+            	<?php echo $this->Html->image(
+            	    'vanessa-text.png',
+            	    array('alt' => 'Vanessa')
+            	);?>
+        	</div>
 			<?php echo $this->Session->flash(); ?>
-
-			<?php echo $content_for_layout; ?>
-
-		</div>
-		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt'=> __('CakePHP: the rapid development php framework', true), 'border' => '0')),
-					'http://www.cakephp.org/',
-					array('target' => '_blank', 'escape' => false)
-				);
+			
+			<div id="content-inner"><?php echo $content_for_layout; ?></div>
+			<?php 
+				$section['Assignments'] = array('assignments', 'placements', 'students_preferences', 'solutions');
+				$section['Courses'] = array('courses', 'activities', 'preferences');
+				
+				$current_section = Router::getParams(); $current_section = $current_section['controller']; 
 			?>
+		<div id="menu">
+			<ul class="menu">
+				<?php $link = $this->Html->url('/dashboard'); $class = ($this->here == $link) ? ' active' : ''; ?>
+				<li class="blue<?php echo $class;?>"><?php echo $this->Html->link(__('Dashboard', true), '/dashboard'); ?></li>
+				<?php $link = $this->Html->url('/assignments'); $class = (in_array($current_section, $section['Assignments'])) ? ' active' : ''; ?>
+				<li class="purple<?php echo $class;?>"><?php echo $this->Html->link(__('Assignments', true), '/assignments'); ?></li>
+				<?php $link = $this->Html->url('/courses'); $class = (in_array($current_section, $section['Courses'])) ? ' active' : ''; ?>
+				<li class="pink<?php echo $class;?>"><?php echo $this->Html->link(__('Courses', true), '/courses'); ?></li>
+		    </ul>
+		</div>
+		<div id="vanessa" class="vanessa"></div>
+        <div id="speech-bubble" class="speech-hi"></div>
+        <style>
+            #login-button { position: absolute; z-index: 2; top: 68px; left: 278px; }
+            #vanessa { position: absolute; z-index: 2; top: 448px; left: 560px; }
+            #speech-bubble { position: absolute; z-index: 3; top: 400px; left: 700px; }
+        </style>
 		</div>
 	</div>
-	<?php echo $this->element('sql_dump'); ?>
 </body>
 </html>

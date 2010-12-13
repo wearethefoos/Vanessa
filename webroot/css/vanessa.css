@@ -1,0 +1,153 @@
+body {
+	background: #ffe;
+}
+pre.cake-debug {
+	background-color: #fff;
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#fcfcfc));
+	background-image: -moz-linear-gradient(top, #fff, #fcfcfc);
+	color: #ccc;
+}
+pre.cake-debug:hover {
+	background-color: #fc0;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ff3), to(#fc0));
+	background-image: -moz-linear-gradient(top, #ff3, #fc0);
+	color: #000;
+}
+
+/** FORMS **/
+
+/* remove webkit border on focus */
+input:focus {
+	outline: none;
+}
+
+/** LOGIN SCREEN **/
+#login {
+	width: 336px;
+	height: 261px;
+	background: url(../img/login-box.png) 50% 50% no-repeat;
+	margin: auto;
+	top: -400px;
+	position: relative;
+	z-index: 1;
+}
+#login form {
+	padding: 60px 30px;
+	width: 276px;
+	height: 101px;
+}
+#login input {
+	background: url(../img/input-pink.png) 50% 50% no-repeat;
+	width: 224px;
+	height: 51px;
+	padding: 5px 10px;
+	border: 0;
+	color: #f99;
+	font-size: 25px;
+}
+
+/** DASHBOARD **/
+div.course, div.assignment {
+	font-size: 1.2em;
+}
+div.course.waiting {
+	background: url(../img/waiting.png) right 50% no-repeat;
+	padding-right: 300px;
+	display: inline;
+	clear: both;
+}
+div.course.waiting a {
+	color: #f36;
+}
+
+/** Cherry Pickin' **/
+#tree {
+	background: url(../img/cherries.png) bottom right no-repeat;
+	width: 200px;
+}
+#basket {
+	background: url(../img/basket.png) 50% 50% no-repeat;
+	width: 200px;
+}
+
+/* Drag-n-drop */
+ul.sortable h2 {
+	font-size: 20px;
+}
+
+ul.sortable {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+ul.sortable li {
+	cursor: move;
+	margin-bottom: 5px;
+	padding: 5px;
+	background: url(../img/semi-blue-pix.png);
+	border: 1px solid #DEDEDE;
+	width: 200px;
+}
+
+ul.sortable li:hover {
+	background-color: #ffc;
+}
+
+div.assignments.tree {
+	width: 240px;
+	float: left;
+}
+div.assignments.basket {
+	width: 240px;
+	float: left;
+}
+
+/** LAYOUT STUFF **/
+h4 { font-weight: bold; font-size: 1.2em; }
+#header { position: fixed; top:0; left: 0; width: 100%; background: url(../img/header.png) left 50% no-repeat; height: 40px; }
+#header img { float: right; margin-right: 20px; }
+#container { background: url(../img/content.png) 50% 50% no-repeat; width: 657px; height: 495px; margin: 120px auto; overflow: hidden; }
+#content { background: none; padding: 80px 250px 250px 30px; position: absolute; width: 600px; height: 420px; z-index: 1; margin-top:-55px; overflow: hidden; }
+#content-inner { position: relative; }
+#menu { position: absolute; width: 199px; top: 100px; left: 523px; z-index: 3; }
+#content-heading { position: absolute; width: 600px; height: 50px; margin-top: -60px; z-index: 5; text-align: right; }
+
+.center { text-align: center; }
+
+/** UI STUFF **/
+div.vanessa { background: url(../img/vanessa.png) 50% 50% no-repeat; width: 151px; height: 149px; }
+div.speech-hi { width: 62px; height: 77px; background: url(../img/speech-hi.png) 50% 50% no-repeat; }
+div.small-arrow { width: 71px; height: 28px; font-size: 20px; text-align: right; padding: 18px 18px; cursor: pointer; }
+div.small-arrow.blue { background: url(../img/small-arrow-blue.png) 50% 50% no-repeat; }
+ul.menu { list-style: none; }
+ul.menu li { width: 133px; height: 22px; padding: 32px 20px; text-align: center; margin-left: 35px; }
+ul.menu li.active { width: 149px; height: 15px; padding: 45px; margin-left: 11px; }
+ul.menu li.blue { background: url(../img/small-arrows.png) 0 -160px no-repeat; }
+ul.menu li.blue.active { background: url(../img/big-arrows.png) 0 0 no-repeat; }
+ul.menu li.purple { background: url(../img/small-arrows.png) 0 0 no-repeat; }
+ul.menu li.purple.active { background: url(../img/big-arrows.png) 0 -202px no-repeat; }
+ul.menu li.pink { background: url(../img/small-arrows.png) 0 -80px no-repeat; }
+ul.menu li.pink.active { background: url(../img/big-arrows.png) 0 -101px no-repeat; }
+ul.menu a:link { color: #fff; text-decoration: none; }
+ul.menu a:hover { color: #fff; text-decoration: none; }
+ul.menu a:visited { color: #fff; text-decoration: none; }
+div.assignments { border: 3px solid #60f; padding: 5px 10px; -webkit-border-radius:10px; -moz-border-radius:10px; margin: 20px 10px; width: 80%; height: 100%; }
+div.courses { border: 3px solid #f06; padding: 5px 10px; -webkit-border-radius:10px; -moz-border-radius:10px; margin: 20px 10px; width: 80%; height: 80%; }
+div.assignments .header { background: url(../img/text-headers.png) 0 0 no-repeat; height: 34px; }
+div.courses .header { background: url(../img/text-headers.png) 0 -35px no-repeat; height: 34px; }
+.droppable-active { background: #ffe !important; border: 4px solid #cca !important;}
+.blue { color: #0cf; }
+.pink { color: #f39; }
+.purple { color: #93f; }
+div.help { position: absolute; z-index: 99; border: 4px solid #f9c; background: #f39; color: #fff; -webkit-border-radius:10px; -moz-border-radius:10px; width: 250px; padding: 5px 3px;}
+div li {
+	margin-left: 2em;
+}
+div.tree ol li { color: #ccc; }
+div.tree ol li.unwantedness-0 { color: #000; font-size: 1.5em; }
+div.tree ol li.unwantedness-1 { color: #333; font-size: 1.4em; }
+div.tree ol li.unwantedness-2 { color: #666; font-size: 1.3em; }
+div.tree ol li.unwantedness-3 { color: #999; font-size: 1.2em; }
+div.tree ol li.unwantedness-4 { color: #bbb; font-size: 1.1em; }
+div.tree ol li.unwantedness-99 { text-decoration: line-through; }

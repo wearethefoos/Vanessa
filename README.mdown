@@ -28,6 +28,7 @@ Do the following to install the app.
 ``CREATE DATABASE `vanessa_test`;``
 
 ``GRANT ALL ON `vanessa`.* TO `vanessa`@localhost IDENTIFIED BY 'password';``
+
 ``GRANT ALL ON `vanessa_test`.* TO `vanessa`@localhost IDENTIFIED BY 'password';``
 
 `quit;`

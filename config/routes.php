@@ -1,6 +1,6 @@
 <?php
 /**
- * Routes Configuration
+ * Short description for file.
  *
  * In this file, you set up routes to your controllers and their actions.
  * Routes are very important mechanism that allows you to freely connect
@@ -28,8 +28,13 @@
  * to use (in this case, /app/views/pages/home.ctp)...
  */
 	Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
+	Router::connect('/login', array('controller' => 'users', 'action' => 'login'));
+	Router::connect('/logout', array('controller' => 'users', 'action' => 'logout'));
+	Router::connect('/dashboard', array('controller' => 'users', 'action' => 'dashboard'));
+	Router::connect('/assignments', array('controller' => 'placements', 'action' => 'index'));
 
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+?>
