@@ -1,0 +1,57 @@
+V.A.N.E.S.S.A.
+======
+_Virtually Automated and Nearly Effortless Students to Subjects Assignement_
+
+## Installation
+
+Do the following to install the app.
+
+### Step 1: Clone the repostory
+
+`cd to/webroot/folder`
+
+`git clone git@github.com:foxycoder/Vanessa.git`
+
+`cd Vanessa`
+
+### Create the database
+
+`mysql -u root -p`
+
+``CREATE DATABASE `vanessa;`;``
+
+``CREATE DATABASE `vanessa_test`;``
+
+``GRANT ALL ON `vanessa`.* TO `vanessa`@localhost IDENTIFIED BY 'password';``
+``GRANT ALL ON `vanessa_test`.* TO `vanessa`@localhost IDENTIFIED BY 'password';``
+
+`quit;`
+
+### Running the database script (cake shell)
+
+Now, run the schema create shell script.
+
+`cake schema create`
+
+### Running the database sql script (in mysql)
+
+Or, run the sql.
+
+`mysql -u root -p`
+
+`source config/schema/schema.sql;`
+
+`quit`
+
+### Configure your app
+
+Copy the default local and database file and edit them to match your local
+environment.
+
+`cp config/local.default.php config/local.php && nano config/local.php`
+
+`cp config/database.php.default config/database.php && nano config/database.php`
+
+## Init and update the git submodules
+
+`git submodule update --init`
