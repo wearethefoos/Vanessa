@@ -1,12 +1,17 @@
 V.A.N.E.S.S.A.
 ======
-_Virtually Automated and Nearly Effortless Students to Subjects Assignement_
+_Virtually Automated and Nearly Effortless Students to Subjects Assignment_
+
+This app allows teachers to create courses, invite students to the course and
+create some activities for the course. Students are able to pick a few 
+activities in order of preference. The teacher can then run the assignment
+task and students will be assigned to their highest preference possible..
 
 ## Installation
 
 Do the following to install the app.
 
-### Step 1: Clone the repostory
+### Step 1: Clone the repository
 
 `cd to/webroot/folder`
 
