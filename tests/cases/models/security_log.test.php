@@ -4,7 +4,10 @@
 App::import('Model', 'SecurityLog');
 
 class SecurityLogTestCase extends CakeTestCase {
-	var $fixtures = array('app.security_log', 'app.user');
+	var $fixtures = array(
+		'app.security_log', 
+		'app.user'
+		);
 
 	function startTest() {
 		$this->SecurityLog =& ClassRegistry::init('SecurityLog');

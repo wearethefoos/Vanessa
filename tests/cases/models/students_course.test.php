@@ -1,9 +1,9 @@
 <?php
 
 /* Course Test cases generated on: 2010-11-26 12:11:24 : 1290769224*/
-App::import('Model', 'Course');
+App::import('Model', 'StudentsCourse');
 
-class CourseTestCase extends CakeTestCase {
+class StudentsCourseTestCase extends CakeTestCase {
 	var $fixtures = array(
 		'app.course', 
 		'app.user', 
@@ -18,7 +18,14 @@ class CourseTestCase extends CakeTestCase {
 		);
 
 	function startTest() {
-		$this->Course =& ClassRegistry::init('Course');
+		$this->StudentsCourse =& ClassRegistry::init('StudentsCourse');
+	}
+	
+	function testGetStudentsCourses() {
+		$courses = $this->StudentsCourse->getStudentsCourses(1);
+
+		/* student 1 should be associated to 1 course, so.. */
+		$this->assertEqual(count($courses), 1);
 	}
 
 	function endTest() {

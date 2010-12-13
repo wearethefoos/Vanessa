@@ -41,5 +41,20 @@ class StudentsCourse extends AppModel {
 			'order' => ''
 		)
 	);
+	
+	function getStudentsCourses($student_id=null) {
+		$courses = array();
+		if ($student_id) {
+			$students_courses = $this->find('all', array(
+				'conditions' => array(
+					'StudentsCourse.student_id' => $student_id,
+				)
+			));
+			foreach ($students_courses as $students_course) {
+				$courses[] = $students_course['Course'];
+			}
+		}
+		return $courses;
+	}
 }
 ?>

@@ -15,8 +15,6 @@ class PreferenceTestCase extends CakeTestCase {
 		'app.role', 
 		'app.security_log', 
 		'app.activity', 
-		'app.join_activity_group', 
-		'app.activity_group'
 		);
 
 	function startTest() {
@@ -36,6 +34,7 @@ class PreferenceTestCase extends CakeTestCase {
 		$Session->startup($Controller);
 
 		$Session->write('Auth.User.student_id', 1);
+		
 		$this->assertEqual($this->Preference->getStudentIdFromSession(), 1);
 	}
 	
@@ -46,9 +45,9 @@ class PreferenceTestCase extends CakeTestCase {
 		);
 	}
 	
-	function testGetCourseFromActivityGroupId() {
+	function testGetCourseFromActivityId() {
 		$this->assertEqual(
-			$this->Preference->getCourseFromActivityGroupId(1),
+			$this->Preference->getCourseFromActivityId(1),
 			1
 		);
 	}
@@ -56,7 +55,7 @@ class PreferenceTestCase extends CakeTestCase {
 	function testCreateNewPreference() {
 		$preference = array(
 			'student_group_id' => 1,
-			'activity_group_id' => 1,
+			'activity_id' => 1,
 			'unwantedness' => 1
 		);
 		$this->assertEqual(

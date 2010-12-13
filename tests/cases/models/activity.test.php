@@ -4,7 +4,11 @@
 App::import('Model', 'Activity');
 
 class ActivityTestCase extends CakeTestCase {
-	var $fixtures = array('app.activity', 'app.user', 'app.course', 'app.join_activity_group');
+	var $fixtures = array(
+		'app.activity', 
+		'app.user', 
+		'app.course'
+		);
 
 	function startTest() {
 		$this->Activity =& ClassRegistry::init('Activity');

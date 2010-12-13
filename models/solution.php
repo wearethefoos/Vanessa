@@ -1,6 +1,6 @@
 <?php
-class Activity extends AppModel {
-	var $name = 'Activity';
+class Solution extends AppModel {
+	var $name = 'Solution';
 	var $validate = array(
 		'course_id' => array(
 			'numeric' => array(
@@ -12,27 +12,7 @@ class Activity extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'name' => array(
-			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
-		'room' => array(
-			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
-		'max_participants' => array(
+		'student_id' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
@@ -42,7 +22,17 @@ class Activity extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'min_participants' => array(
+		'unwantedness' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'activity_id' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
@@ -62,17 +52,21 @@ class Activity extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
+		),
+		'Student' => array(
+			'className' => 'Student',
+			'foreignKey' => 'student_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'Activity' => array(
+			'className' => 'Activity',
+			'foreignKey' => 'activity_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
 		)
 	);
-	
-	public function getCourseIdFromId($id=null) {
-		if ($id) {
-			if ($activity = $this->findById($id)) {
-				return $activity['Activity']['course_id'];
-			}
-		}
-		return false;
-	}
-
 }
 ?>
