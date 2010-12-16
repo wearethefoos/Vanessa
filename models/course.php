@@ -95,6 +95,18 @@ class Course extends AppModel {
 			'insertQuery' => ''
 		)
 	);
+	
+	function fromUserWithId($id=null, $list=false) {
+		if ($id) {
+			$list = $list ? 'list' : 'all';
+			return $this->find($list, array(
+				'conditions' => array(
+					'Course.user_id' => $id,
+				)
+			));
+		}
+		return false;
+	}
 
 }
 ?>

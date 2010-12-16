@@ -34,7 +34,7 @@
 		echo $this->Html->css('cake.generic');
 		echo $this->Html->css('vanessa');
 		echo $this->Html->script('prototype.s2.min');
-		echo $this->Html->script('ui');
+		echo $this->Html->script('s2.ui');
 
 		echo $scripts_for_layout;
 	?>

@@ -2,64 +2,70 @@
 class ActivitiesController extends AppController {
 
 	var $name = 'Activities';
+	
+	function index() {}
+	function view($id=null) {}
+	function subscribe($id=null) {}
+	function unsubscribe($id=null) {}
 
-	function index() {
+	function admin_index() {
 		$this->Activity->recursive = 0;
 		$this->set('activities', $this->paginate());
 	}
 
-	function view($id = null) {
+	function admin_view($id = null) {
 		if (!$id) {
-			$this->Session->setFlash(__('Invalid activity', true));
+			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'activity'));
 			$this->redirect(array('action' => 'index'));
 		}
 		$this->set('activity', $this->Activity->read(null, $id));
 	}
 
-	function add() {
+	function admin_add($course_id=null) {
 		if (!empty($this->data)) {
 			$this->Activity->create();
 			if ($this->Activity->save($this->data)) {
-				$this->Session->setFlash(__('The activity has been saved', true));
-				$this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'activity'), 'flash/modal', array('class' => 'success'));
+				$this->redirect(array('controller' => 'courses', 'action' => 'view', $this->data['Activity']['course_id'], 'admin' => false));
 			} else {
-				$this->Session->setFlash(__('The activity could not be saved. Please, try again.', true));
+				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'activity'), 'flash/modal', array('class' => 'error'));
 			}
 		}
-		$courses = $this->Activity->Course->find('list');
-		$this->set(compact('courses'));
+		if ($course_id) {
+			$this->data['Activity']['course_id'] = $course_id;
+		}
+		$this->set('courses', $this->Activity->Course->fromUserWithId($this->Session->read('Auth.User.id'), true));
 	}
 
-	function edit($id = null) {
+	function admin_edit($id = null) {
 		if (!$id && empty($this->data)) {
-			$this->Session->setFlash(__('Invalid activity', true));
+			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'activity'));
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
 			if ($this->Activity->save($this->data)) {
-				$this->Session->setFlash(__('The activity has been saved', true));
+				$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'activity'));
 				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The activity could not be saved. Please, try again.', true));
+				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'activity'));
 			}
 		}
 		if (empty($this->data)) {
 			$this->data = $this->Activity->read(null, $id);
 		}
-		$courses = $this->Activity->Course->find('list');
-		$this->set(compact('courses'));
+		$this->set('courses', $this->Activity->Course->fromUserWithId($this->Session->read('Auth.User.id'), true));
 	}
 
-	function delete($id = null) {
+	function admin_delete($id = null) {
 		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for activity', true));
+			$this->Session->setFlash(sprintf(__('Invalid id for %s', true), 'activity'));
 			$this->redirect(array('action'=>'index'));
 		}
 		if ($this->Activity->delete($id)) {
-			$this->Session->setFlash(__('Activity deleted', true));
+			$this->Session->setFlash(sprintf(__('%s deleted', true), 'Activity'));
 			$this->redirect(array('action'=>'index'));
 		}
-		$this->Session->setFlash(__('Activity was not deleted', true));
+		$this->Session->setFlash(sprintf(__('%s was not deleted', true), 'Activity'));
 		$this->redirect(array('action' => 'index'));
 	}
 }

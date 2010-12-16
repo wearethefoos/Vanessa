@@ -155,8 +155,8 @@ class CoursesController extends AppController {
 			$this->data['Course']['user_id'] = $this->Session->read('Auth.User.id');
 			$this->Course->create();
 			if ($this->Course->save($this->data)) {
-				$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'course'));
-				$this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(sprintf(__('Excelent! Now add some activities to the %s', true), 'course'));
+				$this->redirect(array('controller' => 'activities', 'action' => 'add', 'admin' => true));
 			} else {
 				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'course'));
 			}
