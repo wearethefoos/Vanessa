@@ -105,7 +105,7 @@ class LdapLookupComponent extends Object {
       $attrsonly = false;
       $sizelimit = 1;
 	  $dn = $this->studentDn.$this->baseDn; // TODO: we will only lookup students for now..
-	  $role_id = 7; // student role_id
+	  $role_id = 11; // student role_id
       $lookup_user = ldap_search($this->ds, $dn, $filter, $attributes, $attrsonly, $sizelimit);
       // retrieve information
       $entry = ldap_get_entries($this->ds, $lookup_user);
@@ -118,14 +118,14 @@ class LdapLookupComponent extends Object {
           $this->log('Unbound LDAP server', 'debug');
       }
 
-      $ldap_user = $entry[0];
-      if(isset($ldap_user['cn'][0])) {                                    // retrieve supervisor name
-		 $this->log('Found in LDAP', 'debug');
+      $ldap_user = isset($entry[0]) ? $entry[0] : '';
+      
+      if (isset($ldap_user['cn'][0])) {                                    // retrieve supervisor name
+         $this->log('Found in LDAP', 'debug');
          $username = $ldap_user['cn'][0];
       } else {
 		 $this->log('Not found in LDAP', 'debug');
-		 $this->controller->Session->setFlash(__('One or more UvAnetID\'s not found', true), 'flash/modal', array('class' => 'error'));
-         return false;
+         return -1;              // -1: This means user is not found in LDAP
 	  }
 
       $result = array('User' => array('role_id' => $role_id));

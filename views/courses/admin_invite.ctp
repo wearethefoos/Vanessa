@@ -1,9 +1,17 @@
 <div class="courses">
 	<h3 class="pink"><?php __('Invite Students') ?></h3>
 	<?php
+      $students_not_found = '';
+      if (isset($studentsnotfound)) {
+         foreach ($studentsnotfound as $student_nummer) {
+            $students_not_found = $student_nummer . '
+';
+         }
+      }
 		echo $this->Form->create('Course');
 		echo $this->Form->input('id');
 		echo $this->Form->input('students', array(
+         'value' => $students_not_found,
 			'type' => 'textarea', 
 			'between' => '<div class="help"><p>' . __('You can add multiple students at once by placing each student number on a new line, like so:', true) . '</p><p>12345678<br />23456789<br />34567890</p></div>'
 			));
