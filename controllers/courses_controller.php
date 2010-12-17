@@ -9,6 +9,8 @@ class CoursesController extends AppController {
 	}
 	
 	function view($id) {
+		$this->layout = 'large';
+		
 		if (!$id) {
 			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'course'));
 			$this->redirect(array('action' => 'index'));
@@ -37,6 +39,8 @@ class CoursesController extends AppController {
 	}
 	
 	function admin_invite($course_id=null) {
+		$this->layout = 'large';
+		
 		if ($course_id || isset($this->data['Course']['id'])) {
 			$course_id = ($course_id) ? $course_id : $this->data['Course']['id'];
 		}

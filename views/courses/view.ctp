@@ -2,7 +2,7 @@
 	<h2><?php echo $course['Course']['name']; ?></h2>
 	<div class="right">
 		<?php switch ($this->Session->read('Auth.User.role_id')) { 
-				case 7 : // student 
+				case STUDENT : // student 
 				echo $this->Html->link(__('Preferences', true), array(
 					'controller' => 'courses',
 					'action' => 'pick',
@@ -11,7 +11,9 @@
 					array('class' => 'pink')
 					);
 				break;
-				case 6 : // teacher
+				case ADMINISTRATOR :
+				case SUPERVISOR :
+				case TEACHER : // teacher
 				echo $this->Html->link(__('Invitations', true), array(
 					'controller' => 'courses',
 					'action' => 'invite',
@@ -42,7 +44,7 @@
 <?php else : ?>
 <div class="assignments">
 	<h3 class="purple"><?php printf(__('Related %s', true), __('Activities', true));?></h3>
-	<?php if ($this->Session->read('Auth.User.role_id') <= 6) { // roles teachers and up 
+	<?php if ($this->Session->read('Auth.User.role_id') <= TEACHER) { // roles teachers and up 
 		echo $this->Html->link(__('Add activity', true), array(
 				'controller' => 'activities',
 				'action' => 'add',
@@ -55,7 +57,7 @@
 	<tr>
 		<th><?php __('Name'); ?></th>
 		<th><?php __('Teacher'); ?></th>
-		<?php if ($this->Session->read('Auth.User.role_id') <= 6) : ?>
+		<?php if ($this->Session->read('Auth.User.role_id') <= TEACHER) : ?>
 		<th class="actions"><?php __('Actions');?></th>
 		<?php endif; ?>
 	</tr>
@@ -70,7 +72,7 @@
 		<tr<?php echo $class;?>>
 			<td><?php echo $activity['name'];?></td>
 			<td><?php echo $activity['teacher'];?></td>
-			<?php if ($this->Session->read('Auth.User.role_id') <= 6) : // roles teachers and up ?>
+			<?php if ($this->Session->read('Auth.User.role_id') <= TEACHER) : // roles teachers and up ?>
 			<td class="actions">
 				<?php echo $this->Html->link(__('View', true), array('controller' => 'activities', 'action' => 'view', $activity['id'], 'admin' => true)); ?>
 				<?php echo $this->Html->link(__('Edit', true), array('controller' => 'activities', 'action' => 'edit', $activity['id'], 'admin' => true)); ?>
