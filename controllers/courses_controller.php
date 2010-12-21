@@ -37,7 +37,8 @@ class CoursesController extends AppController {
 				'Course.user_id' => $this->Session->read('Auth.User.id')
 			)));
 	}
-	
+
+
 	function admin_invite($course_id=null) {
 		$this->layout = 'large';
 		
@@ -50,7 +51,11 @@ class CoursesController extends AppController {
 			if (isset($this->data['Course']['password'])) {
 				$students = explode("\n", $this->data['Course']['students']);
 				foreach ($students as $uvanetid) {
-					$uvanetid = trim($uvanetid);
+					$uvanetid = preg_replace('/[\W]*$/', '', $uvanetid);
+               $uvanetid = preg_replace('/^[\W]*/', '', $uvanetid);
+               if (empty($uvanetid)) {
+                  continue;
+               }
                // Can we find this uvanetid in the user table
 					$student_data = $this->Course->User->find('first', array(
 						'conditions' => array('username' => $uvanetid),
@@ -130,7 +135,14 @@ class CoursesController extends AppController {
 			}
 
          if ($wrong_password) {
-            $students_not_found = explode("\n", $this->data['Course']['students']);
+            $students_not_found = array();
+            $students = explode("\n", $this->data['Course']['students']);
+            foreach ($students as $uvanetid) {
+					$uvanetid = preg_replace('/[\W]*$/', '', $uvanetid);
+               $uvanetid = preg_replace('/^[\W]*/', '', $uvanetid);
+               $students_not_found[] = $uvanetid;
+            }
+
          }
          $this->set('studentsnotfound', $students_not_found);
 		} else {

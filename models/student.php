@@ -4,8 +4,8 @@ class Student extends AppModel {
 	var $name = 'Student';
 	var $validate = array(
 		'coll_kaart' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
+			'notempty' => array(
+				'rule' => array('notempty'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
