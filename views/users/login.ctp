@@ -1,9 +1,13 @@
+<script>
+window.onload = function() {$("UserPassword").hide();}
+</script>
 <div id="title"></div>
 <div id="login-button" class="small-arrow blue" onclick="plummitAndAway($('UserLoginForm'));"><?php __('Login')?></div>
 <?php
     echo $form->create('User', array('action' => 'login'));
-    echo $form->input('username', array('value' => 'UvaAnetID', 'label' => false, 'onfocus' => 'this.value = "";', 'onblur' => 'if (this.value=="") this.value="UvAnetID";'));
-    echo $form->input('password', array('value' => __('Password', true), 'type' => 'text', 'label' => false, 'onfocus' => 'this.value = ""; this.setAttribute("type", "password");', 'onblur' => 'if (this.value=="") { this.value="Password"; this.setAttribute("type", "text"); }'));
+    echo $form->input('username', array('value' => 'UvaNetID', 'label' => false, 'onfocus' => 'this.value = "";', 'onblur' => 'if (this.value=="") this.value="UvAnetID";'));
+    echo $form->input('password', array('type' => 'password', 'label' => false, 'div' => array('style' => 'margin-bottom:0;padding-bottom:0'), 'onblur' => 'if (this.value=="") {$(this).hide();$("TextPassword").show()}'));
+    echo $form->input('text', array('value' => __('Password', true), 'type' => 'text', 'label' => false, 'div' => array('style' => 'margin-top:0;padding-top:0'), 'id' => 'TextPassword', 'onfocus' => '$(this).hide();$("UserPassword").show();$("UserPassword").focus()'));
     echo $form->end();
 ?>
 <div id="vanessa" class="vanessa"></div>
