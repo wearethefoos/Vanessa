@@ -22,11 +22,14 @@ class ActivitiesController extends AppController {
 	}
 
 	function admin_add($course_id=null) {
+		$this->layout = 'large';
 		if (!empty($this->data)) {
 			$this->Activity->create();
 			if ($this->Activity->save($this->data)) {
 				$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'activity'), 'flash/modal', array('class' => 'success'));
-				$this->redirect(array('controller' => 'courses', 'action' => 'view', $this->data['Activity']['course_id'], 'admin' => false));
+				//$this->redirect(array('controller' => 'courses', 'action' => 'view', $this->data['Activity']['course_id'], 'admin' => false));
+				$course_id = $this->data['Activity']['course_id'];
+				$this->data = null;
 			} else {
 				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'activity'), 'flash/modal', array('class' => 'error'));
 			}
@@ -35,6 +38,7 @@ class ActivitiesController extends AppController {
 			$this->data['Activity']['course_id'] = $course_id;
 		}
 		$this->set('courses', $this->Activity->Course->fromUserWithId($this->Session->read('Auth.User.id'), true));
+		$this->set('activities', $this->Activity->getActivityListFromCourse($course_id));
 	}
 
 	function admin_edit($id = null) {

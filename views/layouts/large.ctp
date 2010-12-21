@@ -68,8 +68,8 @@
 			</div>
 			<div id="content-bottom"></div>
 			<?php 
-				$section['Assignments'] = array('assignments', 'placements', 'students_preferences', 'solutions');
-				$section['Courses'] = array('courses', 'activities', 'preferences');
+				$section['Assignments'] = array('assignments', 'placements', 'students_preferences', 'solutions', 'activities');
+				$section['Courses'] = array('courses', 'preferences');
 				
 				$current_section = Router::getParams(); $current_section = $current_section['controller']; 
 			?>

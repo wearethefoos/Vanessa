@@ -7,6 +7,7 @@
 		echo $this->Form->input('description');
 	?>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit', true));?>
-<?php echo $this->Html->link(__('Cancel', true), array('action' => 'index'));?>
+
+	<?php echo $this->Html->link(__('Cancel', true), array('action' => 'index', 'admin' => false));?>
+	<?php echo $this->Form->end(__('Submit', true));?>
 </div>
