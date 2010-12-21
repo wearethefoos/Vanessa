@@ -1,5 +1,6 @@
 <?php
 class Course extends AppModel {
+   var $actsAs = array('Containable');
 	var $name = 'Course';
 	var $validate = array(
 		'name' => array(

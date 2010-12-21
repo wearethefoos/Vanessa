@@ -55,9 +55,9 @@ class PlaceStudents {
       $nb_students = 0;
       foreach($placements as $activity_key => &$placement) {
          $style = '';
-         if ($placement['nb_students'] < $this->activities[$activity_key]['min'])
+         if ($placement['nb_students'] < $this->activities[$activity_key]['min_participants'])
             $style = 'background-color:#FF3030';
-         else if ($placement['nb_students'] > $this->activities[$activity_key]['max'])
+         else if ($placement['nb_students'] > $this->activities[$activity_key]['max_participants'])
             $style = 'background-color:#9400D3';
          echo '<tr>
                   <td style="' . $style . '">' . $this->activities[$activity_key]['name'] . '</td>';
@@ -76,10 +76,10 @@ class PlaceStudents {
             if (count($this->student_groups[$student_group_key]['group']) == 1) {
                $nb_students++;
                $nb_students_in_activity++;
-               if ($nb_students_in_activity == $this->activities[$activity_key]['min']) {
+               if ($nb_students_in_activity == $this->activities[$activity_key]['min_participants']) {
                   $style .= ';border-right:8px solid blue';
                }
-               echo '<td style="' . $style . '">' . $this->students[$this->student_groups[$student_group_key]['group'][0]]['name'] . '</td>';
+               echo '<td style="' . $style . '">' . $this->students[$this->student_groups[$student_group_key]['group'][0]]['coll_kaart'] . '</td>';
             } else {
                $style .= ';border:3px solid black';
                echo '<td style="' . $style . '" colspan="' . count($this->student_groups[$student_group_key]['group']) . '">';
@@ -87,19 +87,19 @@ class PlaceStudents {
                foreach($this->student_groups[$student_group_key]['group'] as $student_key) {
                   $nb_students++;
                   $nb_students_in_activity++;
-                  if ($nb_students_in_activity == $this->activities[$activity_key]['min']) {
+                  if ($nb_students_in_activity == $this->activities[$activity_key]['min_participants']) {
                      echo '<td style="border-right:8px solid blue">';
                   } else {
                      echo '<td>';
                   }
 
-                  echo $this->students[$student_key]['name'] . '</td>';
+                  echo $this->students[$student_key]['coll_kaart'] . '</td>';
                }
                echo '</tr></table>';
                echo '</td>';
             }
          }
-         for ($j = $placement['nb_students']; $j < $this->activities[$activity_key]['max']; $j++) {
+         for ($j = $placement['nb_students']; $j < $this->activities[$activity_key]['max_participants']; $j++) {
             echo '<td style="background-color:grey"></td>';
          }
          echo '</tr>';
@@ -142,13 +142,13 @@ class PlaceStudents {
       $max_free_places = 0;
       $activity_preference = -1;
       foreach ($placements as $activity_key => &$placement) {
-         $free_places = $this->activities[$activity_key]['max'] - $placement['nb_students'];
+         $free_places = $this->activities[$activity_key]['max_participants'] - $placement['nb_students'];
          if ($result == -1 ||
              ($free_places > $max_free_places) ||
              ($free_places == $max_free_places && $placement['preference'] > $activity_preference)) {
             $use_this_activity = true;
             // the activity must be able to accept max_student
-            if ($this->activities[$activity_key]['max'] < $max_student) {
+            if ($this->activities[$activity_key]['max_participants'] < $max_student) {
                $use_this_activity = false;
             } else {
                // There must be enough students in smaller groups than max_student
@@ -182,11 +182,11 @@ class PlaceStudents {
          $min = rand(ACTIVITY_MIN_MIN, ACTIVITY_MIN_MAX);
          $max = $min + rand(0, ACTIVITY_MAX);
 
-         $this->activities[] = array('name' => 'A' . ($activity_key + 1), 'min' => $min, 'max' => $max);
+         $this->activities[] = array('name' => 'A' . ($activity_key + 1), 'min_participants' => $min, 'max_participants' => $max);
       }
 
       for ($student_key = 0; $student_key < $nb_students; $student_key++) {
-         $this->students[] = array('name' => 'S' . ($student_key + 1));
+         $this->students[] = array('coll_kaart' => 'S' . ($student_key + 1));
       }
 
       $students_keys = range(0, $nb_students - 1);
@@ -203,24 +203,24 @@ class PlaceStudents {
          $activity_keys = range(0, $nb_activities - 1);
          shuffle($activity_keys);
          foreach($activity_keys as $activity_key) {
-            if (count($group) <= $this->activities[$activity_key]['max'])
+            if (count($group) <= $this->activities[$activity_key]['max_participants'])
                $preferences[] = $activity_key;
             if (count($preferences) == $nb_preferences)
                break;
          }
-         $this->student_groups[] = array('name' => 'G' . ($group_key + 1), 'group' => $group, 'preferences' => $preferences);
+         $this->student_groups[] = array('group' => $group, 'preferences' => $preferences);
       }
       for (; $student_index < $nb_students; $student_index++, $group_key++) {
          $activity_keys = range(0, $nb_activities - 1);
          shuffle($activity_keys);
-         $this->student_groups[] = array('name' => 'G' . ($group_key + 1), 'group' => array($students_keys[$student_index]), 'preferences' => array_slice($activity_keys, 0, $nb_preferences));
+         $this->student_groups[] = array('group' => array($students_keys[$student_index]), 'preferences' => array_slice($activity_keys, 0, $nb_preferences));
       }
 
       //Initial Checks
       $sum_min = $sum_max = 0;
-      foreach ($this->activities as $activity) {
-         $sum_min += $activity['min'];
-         $sum_max += $activity['max'];
+      foreach ($this->activities as &$activity) {
+         $sum_min += $activity['min_participants'];
+         $sum_max += $activity['max_participants'];
       }
       if ($sum_min > $nb_students) {
          echo "<h2> Number of students (" . $nb_students . ") should be higher than " . $sum_min . ". All activities cannot be fulfilled</h2>";
@@ -238,11 +238,11 @@ class PlaceStudents {
                   <th>MIN</th>
                   <th>MAX</th>
                </tr>';
-      for ($activity_key = 0; $activity_key < count($this->activities); $activity_key++) {
+      foreach ($this->activities as $activity_key => &$activity) {
          echo '<tr>
-                  <td>' . $this->activities[$activity_key]['name'] . '</td>
-                  <td>' . $this->activities[$activity_key]['min'] . '</td>
-                  <td>' . $this->activities[$activity_key]['max'] . '</td>
+                  <td>' . $activity['name'] . '</td>
+                  <td>' . $activity['min_participants'] . '</td>
+                  <td>' . $activity['max_participants'] . '</td>
                </tr>';
       }
       echo '</table></div>';
@@ -264,7 +264,7 @@ class PlaceStudents {
             if (!$first_student)
                echo '-';
             $first_student = false;
-            echo $this->students[$student_key]['name'];
+            echo $this->students[$student_key]['coll_kaart'];
          }
          echo '</td>';
          foreach($student_group['preferences'] as $activity_key)
@@ -276,7 +276,7 @@ class PlaceStudents {
 
    private function get_one_solution(&$placements, $min_constraint, $student_group_keys = null, $init_score = 0) {
       if ($student_group_keys == null) {
-         $student_group_keys = range(0, count($this->student_groups) - 1);
+         $student_group_keys = array_keys($this->student_groups);
       }
       shuffle($student_group_keys);
       $score = $init_score;
@@ -287,7 +287,7 @@ class PlaceStudents {
          $group_score = -1;
          foreach($this->student_groups[$student_group_key]['preferences'] as $preference => $activity_key) {
             $nb_of_students_in_this_activity = $placements[$activity_key]['nb_students'];
-            if ($nb_of_students_in_this_activity + $nb_of_students_in_this_group <= $this->activities[$activity_key]['max']) {
+            if ($nb_of_students_in_this_activity + $nb_of_students_in_this_group <= $this->activities[$activity_key]['max_participants']) {
                $place_found = true;
                $group_score = $preference;
                break;
@@ -296,12 +296,11 @@ class PlaceStudents {
          if (!$place_found) {
             // We could not find a 'prefered activity' for this group
             // Choose randomy an activity with enough places.
-            $activity_keys = range(0, count($this->activities) - 1);
+            $activity_keys = array_keys($this->activities);
             shuffle($activity_keys);
-            for ($j = 0; $j < count($this->activities); $j++) {
-               $activity_key = $activity_keys[$j];
+            foreach ($activity_keys as $activity_key) {
                $nb_of_students_in_this_activity = $placements[$activity_key]['nb_students'];
-               if ($nb_of_students_in_this_activity + $nb_of_students_in_this_group <= $this->activities[$activity_key]['max']) {
+               if ($nb_of_students_in_this_activity + $nb_of_students_in_this_group <= $this->activities[$activity_key]['max_participants']) {
                   $place_found = true;
                   $group_score = UNWANTED_SCORE;
                   break;
@@ -321,12 +320,12 @@ class PlaceStudents {
                      echo '-';
                   else
                      $first_student = false;
-                  echo $this->students[$student_key]['name'];
+                  echo $this->students[$student_key]['coll_kaart'];
                }
                echo '</h2>';
             } else {
                // We must remove some students in this activity.
-               $nb_of_students_to_be_removed = $nb_of_students_in_this_group - ($this->activities[$activity_key]['max'] - $placements[$activity_key]['nb_students']);
+               $nb_of_students_to_be_removed = $nb_of_students_in_this_group - ($this->activities[$activity_key]['max_participants'] - $placements[$activity_key]['nb_students']);
                $groups_in_placement = array();
                foreach ($placements[$activity_key]['groups'] as $group_key => $preference) {
                   if (count($this->student_groups[$group_key]['group']) < $nb_of_students_in_this_group) {
@@ -368,9 +367,9 @@ class PlaceStudents {
          $activities_with_not_enough_students = array();
          $activities_with_more_than_enough_students = array();
          foreach($placements as $activity_key => &$placement) {
-            if ($placement['nb_students'] < $this->activities[$activity_key]['min'])
+            if ($placement['nb_students'] < $this->activities[$activity_key]['min_participants'])
                $activities_with_not_enough_students[$activity_key] = &$placement;
-            if ($placement['nb_students'] > $this->activities[$activity_key]['min'])
+            if ($placement['nb_students'] > $this->activities[$activity_key]['min_participants'])
                $activities_with_more_than_enough_students[$activity_key] = &$placement;
          }
          // Shuffle the 2 arrays
@@ -380,12 +379,12 @@ class PlaceStudents {
          // For each activity with not enough students, find the most interesting student groups in activities
          // where there are more than enough students.
          foreach($activities_with_not_enough_students as $activity_min_key => &$placement_min) {
-            $min_nb_of_students_to_be_added = $this->activities[$activity_min_key]['min'] - $placement_min['nb_students'];
-            $max_nb_of_students_to_be_added = $this->activities[$activity_min_key]['max'] - $placement_min['nb_students'];;
+            $min_nb_of_students_to_be_added = $this->activities[$activity_min_key]['min_participants'] - $placement_min['nb_students'];
+            $max_nb_of_students_to_be_added = $this->activities[$activity_min_key]['max_participants'] - $placement_min['nb_students'];;
             $student_groups_to_be_added = array();
             $nb_of_students_retrieved = 0;
             foreach ($activities_with_more_than_enough_students as $activity_more_key => $placement_more) {
-               $nb_of_students_retrievable_for_current_activity = $placement_more['nb_students'] - $this->activities[$activity_more_key]['min']; // must be > 0
+               $nb_of_students_retrievable_for_current_activity = $placement_more['nb_students'] - $this->activities[$activity_more_key]['min_participants']; // must be > 0
                $student_groups_to_be_added_in_current_activity = array();
                $nb_of_students_retrieved_for_current_activity = 0;
                foreach($placement_more['groups'] as $student_group_key => $old_preference) {
@@ -473,13 +472,13 @@ class PlaceStudents {
                unset($placements[$properties['activity_key']]['groups'][$student_group_key]);
                $placements[$properties['activity_key']]['nb_students'] -= $nb_of_students_in_this_group;
                $placements[$properties['activity_key']]['preference'] -= ($properties['old_preference'] * $nb_of_students_in_this_group);
-               if ($placements[$properties['activity_key']]['nb_students'] <= $this->activities[$properties['activity_key']]['min']) {
+               if ($placements[$properties['activity_key']]['nb_students'] <= $this->activities[$properties['activity_key']]['min_participants']) {
                   unset($activities_with_more_than_enough_students[$properties['activity_key']]);
                }
                $placements[$activity_min_key]['groups'][$student_group_key] = $properties['new_preference'];
                $placements[$activity_min_key]['nb_students'] += $nb_of_students_in_this_group;
                $placements[$activity_min_key]['preference'] += ($properties['new_preference'] * $nb_of_students_in_this_group);
-               if ($placements[$activity_min_key]['nb_students'] > $this->activities[$activity_min_key]['min'])
+               if ($placements[$activity_min_key]['nb_students'] > $this->activities[$activity_min_key]['min_participants'])
                   $activities_with_more_than_enough_students[$activity_min_key] = &$placements[$activity_min_key];
                $score += $nb_of_students_in_this_group * ($properties['new_preference'] - $properties['old_preference']);
             }
@@ -489,9 +488,9 @@ class PlaceStudents {
       $nb_activities_exceding_maximum_students = 0;
       $nb_activities_with_not_enough_students = 0;
       foreach($placements as $activity_key => &$placement) {
-         if ($placement['nb_students'] < $this->activities[$activity_key]['min'])
+         if ($placement['nb_students'] < $this->activities[$activity_key]['min_participants'])
             $nb_activities_with_not_enough_students++;
-         else if ($placement['nb_students'] > $this->activities[$activity_key]['max'])
+         else if ($placement['nb_students'] > $this->activities[$activity_key]['max_participants'])
             $nb_activities_exceding_maximum_students++;
       }
       $result = array(
@@ -526,7 +525,7 @@ class PlaceStudents {
       while((count($pool) < $max_trials) && (count($score_history) < 2 || ($score_history[count($score_history) - 1] < $score_history[count($score_history) - 2]))) {
          for ($trial = 0; $trial < TRIALS_BLOCK; $trial++) {
             $placements = array();
-            for ($activity_key=0; $activity_key < count($this->activities); $activity_key++) {
+            foreach ($this->activities as $activity_key => &$activity) {
                $placements[$activity_key] = array('nb_students' => 0, 'preference' => 0, 'groups' => array());
             }
             $pool[] = $this->get_one_solution($placements, $min_constraint);
@@ -539,10 +538,10 @@ class PlaceStudents {
       while (($generation < $max_generations) && ($generation < 3 || $score_history[count($score_history) - 1] < $score_history[count($score_history) - 3])) {
          $pool = array_slice($pool, 0, ceil(count($pool) / 3));
          foreach ($pool as $solution) {
-            $activity_keys = range(0, count($this->activities) - 1);
+            $activity_keys = array_keys($this->activities);
             shuffle($activity_keys);
-            $activity_keys1 = array_slice($activity_keys, 0, ceil(count($this->activities)/2));
-            $activity_keys2 = array_slice($activity_keys, ceil(count($this->activities)/2));
+            $activity_keys1 = array_slice($activity_keys, 0, ceil(count($activity_keys)/2));
+            $activity_keys2 = array_slice($activity_keys, ceil(count($activity_keys)/2));
             $pool[] = $this->mutate_solution($solution, $activity_keys1, $min_constraint);
             $pool[] = $this->mutate_solution($solution, $activity_keys2, $min_constraint);
          }
@@ -550,21 +549,27 @@ class PlaceStudents {
          $generation++;
          $score_history[] = $pool[0]['end_score'];
       }
+
+      return $pool[0]['placements'];
 //      $this->display_placements($pool[0]['placements'], $pool[0]['end_score'], count($pool), $generation);
 //      $this->display_scores($score_history);
    }
 
-   public function __construct($students, $activities, $student_groups) {
-      $this->activities = $activities;
-      $this->students = $students;
-      $this->student_groups = $student_groups;
+   public function __construct($course_id) {
+      App::import('Model', 'Activity');
+      App::import('Model', 'Student');
+      App::import('Model', 'StudentGroup');
+
+      $this->activities = $this->activity->getActivityListFromCourse($course_id);
+      $this->students = $this->student->getStudentListFromCourse($course_id);
+      $this->student_groups = $this->student_group->getStudentGroupListFromCourse($course_id);
    }
 
 //   echo '<div style="width:3000px">';
 //   initialize($NB_activities, $NB_students, $NB_student_groups, $NB_preferences);
 //   display_activities();
 //   display_preferences($NB_preferences);
-//   find_best_fit($USE_MIN_CONSTRAINT, $MAX_TRIALS, $MAX_GENERATIONS);
+//   find_best_fit(USE_MIN_CONSTRAINT, MAX_TRIALS, MAX_GENERATIONS);
 //   echo '</div>';
 
 

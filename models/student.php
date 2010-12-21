@@ -1,5 +1,6 @@
 <?php
 class Student extends AppModel {
+
 	var $name = 'Student';
 	var $validate = array(
 		'coll_kaart' => array(
@@ -38,7 +39,9 @@ class Student extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		),
+		));
+
+   var $hasOne = array(
 		'User' => array(
 			'className' => 'User',
 			'foreignKey' => 'student_id',
@@ -72,6 +75,20 @@ class Student extends AppModel {
 			'insertQuery' => ''
 		)
 	);
+
+   public function getStudentListFromCourse($course_id) {
+      return $this->findList(array(
+         'conditions' => array('StudentsCourse.course_id' => $course_id),
+         'joins' => array(array(
+                           'table' => 'students_courses',
+                           'alias' => 'StudentsCourse',
+                           'type' => 'INNER',
+                           'conditions' => array('StudentsCourse.student_id = Student.id')
+                     )),
+         'fields' => array('Student.id', 'Student.coll_kaart'),
+         'recursive' => -1
+      ));
+   }
 
 }
 ?>

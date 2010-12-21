@@ -74,5 +74,22 @@ class Activity extends AppModel {
 		return false;
 	}
 
+   public function getActivityListFromCourse($course_id) {
+      $rows = $this->findAll(
+         array(
+            'conditions' => array('course_id' => $course_id),
+            'recursive' => -1,
+            'fields' => array('id', 'name', 'min_participants', 'max_participants')));
+      $result = array();
+      foreach($rows as &$row) {
+         $result[$row['Activity']['id']] = array(
+            'name' => $row['Activity']['name'],
+            'min_participants' => $row['Activity']['min_participants'],
+            'max_participants' => $row['Activity']['max_participants'],
+            );
+      }
+      return $result;
+   }
+
 }
 ?>
