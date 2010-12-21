@@ -1,5 +1,15 @@
 <div class="courses">
 	<div class="header"></div>
+	<?php if ($this->Session->read('Auth.User.role_id') <= TEACHER) : // teachers ?>
+		<div class="right">
+			<?php echo $this->Html->link(__('New course', true), array(
+				'controller' => 'courses',
+				'action' => 'add',
+				'admin' => true,
+				));
+			?>
+		</div>
+	<?php endif; ?>
 	<?php foreach ($courses as $course) : ?>
         <?php
             $class = 'course';
@@ -14,7 +24,7 @@
 	<div class="<?php echo $class; ?>" title="<?php echo $course['Course']['description']; ?>">
 		<?php echo $this->Html->link($course['Course']['name'], array('controller' => 'courses', 'action' => $action, $course['Course']['id'])); ?> 
 		<?php switch ($this->Session->read('Auth.User.role_id')) { 
-				case 7 : // student 
+				case STUDENT : // student 
 				echo $this->Html->link(__('Preferences', true), array(
 					'controller' => 'courses',
 					'action' => 'pick',
@@ -23,7 +33,9 @@
 					array('class' => 'pink')
 					);
 				break;
-				case 6 : // teacher
+				case ADMINISTRATOR : // supervisor
+				case SUPERVISOR : // supervisor
+				case TEACHER : // supervisor
 				echo $this->Html->link(__('Invitations', true), array(
 					'controller' => 'courses',
 					'action' => 'invite',

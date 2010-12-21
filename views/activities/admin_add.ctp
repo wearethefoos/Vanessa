@@ -13,4 +13,19 @@
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
+
+	<table>
+		<thead>
+			<tr>
+				<th><?php echo sprintf(__('Activities for %s', true), $courses[$this->data['Activity']['course_id']]); ?></th>
+			</tr>
+		</thead>
+		<tbody>
+		<?php foreach ($activities as $activity) : ?>
+			<tr>
+				<td><?php echo $activity['name']; ?></td>
+			</tr>
+		<?php endforeach; ?>
+		</tbody>
+	</table>
 </div>

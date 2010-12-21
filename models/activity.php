@@ -75,7 +75,8 @@ class Activity extends AppModel {
 	}
 
    public function getActivityListFromCourse($course_id) {
-      $rows = $this->findAll(
+      $rows = $this->find(
+		 'all',
          array(
             'conditions' => array('course_id' => $course_id),
             'recursive' => -1,
