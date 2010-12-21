@@ -89,8 +89,8 @@
 	</div>
 	<style>
         #login-button { position: absolute; z-index: 2; top: 68px; left: 278px; }
-        #vanessa { position: absolute; z-index: 2; top: 448px; left: 560px; }
-        #speech-bubble { position: absolute; z-index: 3; top: 400px; left: 700px; }
+        #vanessa { position: absolute; z-index: 2; top: 448px; left: 630px; }
+        #speech-bubble { position: absolute; z-index: 3; top: 400px; left: 760px; }
     </style>
 </body>
 </html>

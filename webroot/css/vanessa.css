@@ -108,16 +108,17 @@ h4 { font-weight: bold; font-size: 1.2em; }
 #header { position: fixed; top:0; left: 0; width: 100%; background: url(../img/header.png) left 50% no-repeat; height: 40px; }
 #header img { float: right; margin-right: 20px; }
 #container { background: url(../img/content.png) 50% 50% no-repeat; width: 657px; height: 495px; margin: 120px auto; overflow: hidden; }
-#container.large { background: url(../img/panel-middle.png) 50% 50% repeat-y; width: 657px; min-height: 795px; height: auto; margin: 120px auto; overflow: hidden; }
-#content-top { background: url(../img/panel-top.png) 50% top no-repeat; height: 33px; }
-#content-bottom { background: url(../img/panel-bottom.png) 50% top no-repeat; height: 87px; margin: 0 -55px; clear: both; }
+#container.large { background: none; width: 765px; min-height: 795px; height: auto; margin: 120px auto; overflow: hidden; }
+#content-top { background: url(../img/panel-top.png) 50% top no-repeat; height: 33px; margin-left: 5px; }
+#content-bottom { background: url(../img/panel-bottom.png) 50% top no-repeat; height: 87px; margin: 0px -55px; clear: both; }
 #content { background: none; padding: 80px 250px 250px 30px; position: absolute; width: 600px; height: 420px; z-index: 1; margin-top:-55px; overflow: hidden; }
-#container.large #content { background: none; padding: 80px 250px 250px 30px; position: absolute; width: 600px; height: auto; z-index: 1; margin-top:0px; }
+#container.large #content { background: none; padding: 0px 250px 250px 30px; position: absolute; width: 710px; height: auto; z-index: 1; margin-top:0px; overflow-y: auto; }
 #content-inner { position: relative; height: auto; overflow-y: auto; overflow-x: hidden; clear: both; }
-#container.large #content-inner { min-height: 100%; margin-top: -55px; }
+#container.large #content-inner { background: transparent url(../img/panel-middle.png) 50% 50% repeat-y; min-height: 100%; padding: 55px; }
 #menu { position: absolute; width: 199px; top: 100px; left: 523px; z-index: 3; }
+#container.large #menu { position: absolute; left: 580px; z-index: 3; }
 #content-heading { position: absolute; width: 600px; height: 50px; margin-top: -60px; z-index: 5; text-align: right; }
-#container.large #content-heading { position: absolute; width: 600px; height: 50px; margin-top: -95px; z-index: 5; text-align: right; }
+#container.large #content-heading { position: absolute; margin-top: 0px; }
 
 .center { text-align: center; }
 
