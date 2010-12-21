@@ -64,8 +64,9 @@
 			
 			<div id="content-inner">
 				<?php echo $content_for_layout; ?>
-				<div id="content-bottom"></div>
+				
 			</div>
+			<div id="content-bottom"></div>
 			<?php 
 				$section['Assignments'] = array('assignments', 'placements', 'students_preferences', 'solutions');
 				$section['Courses'] = array('courses', 'activities', 'preferences');
