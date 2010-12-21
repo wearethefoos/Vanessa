@@ -1,3 +1,41 @@
+<script>
+   var sort_order = 'asc';
+   var sort_uvanetid_fn = function(a,b) {
+      var compA = ($(a).childElements())[0].firstChild.nodeValue;
+      var compB = ($(b).childElements())[0].firstChild.nodeValue;
+      if (sort_order == 'desc')
+         return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+      else
+         return (compA > compB) ? -1 : (compA < compB) ? 1 : 0;
+   };
+   var sort_name_fn = function(a,b) {
+      var compA = ($(a).childElements())[1].firstChild.nodeValue;
+      var compB = ($(b).childElements())[1].firstChild.nodeValue;
+      if (sort_order == 'desc')
+         return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+      else
+         return (compA > compB) ? -1 : (compA < compB) ? 1 : 0;
+   };
+
+   function sort_students(sort_fn, sort_order_id) {
+      var top = $("student_table");
+      var sort_order_elt = $(sort_order_id);
+      sort_order = sort_order_elt.getValue();
+      if (sort_order == 'desc')
+         sort_order_elt.value = 'asc';
+      else
+         sort_order_elt.value = 'desc';
+
+      var students = $$("#student_table > tr");
+      students.splice(0, 1);
+      students.sort(sort_fn);
+      students.each(function(item) {
+         top.insert({'bottom':item});
+      });
+   }
+
+
+</script>
 <div class="courses">
 	<h3 class="pink"><?php __('Invite Students') ?></h3>
 	<?php
@@ -29,11 +67,18 @@
 			<p><?php __('No assigned students yet...'); ?></p>
 		<?php else : ?>
 		<table>
-			<tbody>
+			<tbody id="student_table">
+            <tr id="student_header">
+               <th><a href="#" onclick="sort_students(sort_uvanetid_fn, 'sort_order_uvanetid')">UvanetID</a></th>
+               <th><a href="#" onclick="sort_students(sort_name_fn, 'sort_order_name')">Name</a></th>
+               <input type="hidden" id="sort_order_name" value="asc"/>
+               <input type="hidden" id="sort_order_uvanetid" value="asc"/>
+
 			<?php foreach($students as $student) : ?>
 				<tr>
-					<th><?php echo $student['coll_kaart']; ?></th>
+					<td><?php echo $student['coll_kaart']; ?></td>
 					<td><?php echo $student['User']['name']; ?></td>
+               <td><?php echo $this->Html->link($this->Html->image('delete.png'), array('action' => 'delete_invite', $student['id']), array('escape' => false)); ?></td>
 				</tr>
 			<?php endforeach; ?>
 			<tbody>
