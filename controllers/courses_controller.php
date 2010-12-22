@@ -6,7 +6,10 @@ class CoursesController extends AppController {
 	var $components = array('LdapLookup');
 	
 	function index() {
-		$this->set('courses', $this->Course->Supervisor->getUsersCourses($this->Session->read('Auth.User.id'), $this->Session->read('Auth.User.student_id')));
+      $student_id = null;
+      if ($this->Session->read('Auth.User.role_id') == 11)
+         $student_id = $this->Session->read('Auth.User.student_id');
+		$this->set('courses', $this->User->getUsersCourses($this->Session->read('Auth.User.id'), $student_id));
 	}
 	
 	function view($id) {
