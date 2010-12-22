@@ -132,6 +132,7 @@ class User extends AppModel {
 		}
 		if ($list)
 			return $this->Student->Course->find('list', $conditions);
+			
         return $this->Student->Course->find('all', $conditions);
 	}
 
@@ -139,104 +140,19 @@ class User extends AppModel {
  * Gets all the courses related to this user, given that
  * it is a student. (Needed for the dashboard overview)
  * 
- * @param numeric $student: the id of the student.
+ * @param int $student: the id of the student.
  *
  */	
-	function getStudentsUnpreferenced($student=null) {
-	    if ($student) {
-	        $excluded = $this->Student->Course->find('list',
-	            array(
-	                'fields' => array(
-	                    'Course.id',
-	                    'Course.name',
-	                ),
-	                'joins' => array(
-        	            array(
-        	                'table' => 'students_courses',
-        	                'alias' => 'StudentsCourses',
-        	                'type' => 'INNER',
-        	                'conditions' => array(
-                                    'StudentsCourses.course_id = Course.id'
-        	                )
-        	            ),
-        	            array(
-        	                'table' => 'students',
-        	                'alias' => 'Student',
-        	                'type' => 'INNER',
-        	                'conditions' => array(
-        	                    'StudentsCourses.student_id = Student.id',
-        	                )
-        	            ),
-        	            array(
-        	                'table' => 'students_preferences',
-        	                'alias' => 'StudentsPreferences',
-        	                'type' => 'LEFT',
-        	                'conditions' => array(
-        	                    'StudentsPreferences.student_id = Student.id',
-        	                )
-        	            ),
-        	            array(
-        	                'table' => 'activities',
-        	                'alias' => 'Activity',
-        	                'type' => 'INNER',
-        	                'conditions' => array(
-                                    'Activity.course_id = Course.id'
-        	                )
-        	            ),
-	                ),
-	            	'conditions' => array(
-	                     'Student.id' => $student,
-	                ),
-	            )
-	        );
-
-                $included = $this->Student->Course->find('list',
-	            array(
-	                'fields' => array(
-	                    'Course.id',
-	                    'Course.name',
-	                ),
-	                'joins' => array(
-        	            array(
-        	                'table' => 'students_courses',
-        	                'alias' => 'StudentsCourses',
-        	                'type' => 'INNER',
-        	                'conditions' => array(
-                                    'StudentsCourses.course_id = Course.id'
-        	                )
-        	            ),
-        	            array(
-        	                'table' => 'students',
-        	                'alias' => 'Student',
-        	                'type' => 'INNER',
-        	                'conditions' => array(
-        	                    'StudentsCourses.student_id = Student.id',
-        	                )
-        	            ),
-        	            array(
-        	                'table' => 'students_preferences',
-        	                'alias' => 'StudentsPreferences',
-        	                'type' => 'INNER',
-        	                'conditions' => array(
-        	                    'StudentsPreferences.student_id = Student.id',
-        	                )
-        	            ),
-        	            array(
-        	                'table' => 'activities',
-        	                'alias' => 'Activity',
-        	                'type' => 'INNER',
-        	                'conditions' => array(
-        	                    'StudentsPreferences.activity_id = Activity.id',
-                                    'Activity.course_id = Course.id'
-        	                )
-        	            ),
-	                ),
-	            	'conditions' => array(
-	                     'Student.id' => $student,
-	                ),
-	            )
-	        );
-                return array_diff($excluded, $included);
+	function getStudentsUnpreferenced() {
+	    if ($courses = $this->getStudentsCourses()) {
+						
+			foreach ($courses as $course_id => $course_name) {
+				if ($this->Student->Course->getStudentsGroupIdForThisCourse($course_id)) {
+					unset ($courses[$course_id]);
+				}
+			}
+			
+			return $courses;
 	    }
 	    return false;
 	}
@@ -247,93 +163,13 @@ class User extends AppModel {
  * @param numeric $student: the id of the student.
  *
  */
-	function getStudentsPlacements($student=null) {
-	    if ($student) {
-	        $conditions = array(
-	            'fields' => array(
-	                'DISTINCT Course.id',
-	        	'Course.name',
-	                'Course.description',
-	                'Solution.persistant',
-                        'Activity.*'
-	            ),
-	            'joins' => array(
-    	            array(
-    	                'table' => 'students_courses',
-    	                'alias' => 'StudentsCourse',
-    	                'type' => 'inner',
-    	                'conditions' => array(
-    	                    'StudentsCourse.course_id = Course.id'
-    	                )
-    	            ),
-    	            array(
-    	                'table' => 'students',
-    	                'alias' => 'Student',
-    	                'type' => 'inner',
-    	                'conditions' => array(
-    	                    'Student.id = StudentsCourse.student_id'
-    	                )
-    	            ),
-    	            array(
-    	                'table' => 'activities',
-    	                'alias' => 'Activity',
-    	                'type' => 'inner',
-    	                'conditions' => array(
-    	                    'Activity.course_id = Course.id'
-    	                )
-    	            ),
-    	            array(
-    	                'table' => 'placements',
-    	                'alias' => 'Placement',
-    	                'type' => 'inner',
-    	                'conditions' => array(
-    	                    'Placement.activity_id = Activity.id'
-    	                )
-    	            ),
-    	            array(
-    	                'table' => 'solutions',
-    	                'alias' => 'Solution',
-    	                'type' => 'inner',
-    	                'conditions' => array(
-    	                    'Placement.solution_id = Solution.id'
-    	                )
-    	            ),
-	            ),
-	            'conditions' => array(
-	                'StudentsCourse.student_id' => $student,
-	                'Solution.persistant' => 1
-	            ),
-	        );
-			$conditions = array(
-				'contain' => array(
-					'Student' => array(
-						'conditions' => array(
-							'Student.id' => $student,
-						)),
-					'Activity',
-					'Activity.Placement',
-					'Activity.Placement.Solution' => array(
-						'conditions' => array(
-							'Solution.persistant' => 1
-						)),
-					),
-				);
-				
-			$placements = array();
-	        $courses = $this->Student->Course->find('all', $conditions);
-			foreach ($courses as $course_key => $course) {
-				if (count($course['Activity'])) {
-					foreach ($course['Activity'] as $activity_key => $activity) {
-						if (count($activity['Placement']) && count($activity['Placement'][0]['Solution'])) {
-							$placements[$course_key] = array(
-								'Course' => $course['Course'],
-								'Activity' => $course['Activity'][$activity_key],
-							);
-						}
-					}
-				}
-			}
-			return $placements;
+	function getStudentsPlacements() {
+	    if ($student = $this->getStudentIdFromSession()) {
+			return $this->Student->Solution->find('all', array(
+				'conditions' => array(
+					'student_id' => $student,
+				)
+			));
 	    }
 	    return false;
 	}
@@ -346,62 +182,42 @@ class User extends AppModel {
  *
  */
 	function getStudentsUnassigned($student=null) {
-	    if ($student) {
-	        $conditions = array(
-	            'list' => array(
-	                'Course.id',
-	        	'Course.name',
-	            ),
-	            'joins' => array(
-    	            array(
-    	                'table' => 'students_courses',
-    	                'alias' => 'StudentsCourse',
-    	                'type' => 'inner',
-    	                'conditions' => array(
-    	                    'StudentsCourse.course_id = Course.id'
-    	                )
-    	            ),
-    	            array(
-    	                'table' => 'students',
-    	                'alias' => 'Student',
-    	                'type' => 'inner',
-    	                'conditions' => array(
-    	                    'Student.id = StudentsCourse.student_id'
-    	                )
-    	            ),
-    	            array(
-    	                'table' => 'activities',
-    	                'alias' => 'Activity',
-    	                'type' => 'inner',
-    	                'conditions' => array(
-    	                    'Activity.course_id = Course.id'
-    	                )
-    	            ),
-    	            array(
-    	                'table' => 'placements',
-    	                'alias' => 'Placement',
-    	                'type' => 'inner',
-    	                'conditions' => array(
-    	                    'Placement.activity_id = Activity.id'
-    	                )
-    	            ),
-    	            array(
-    	                'table' => 'solutions',
-    	                'alias' => 'Solution',
-    	                'type' => 'inner',
-    	                'conditions' => array(
-    	                    'Placement.solution_id = Solution.id'
-    	                )
-    	            ),
-	            ),
-	            'conditions' => array(
-	                'StudentsCourse.student_id' => $student,
-	                'Solution.persistant' => 1
-	            ),
+	    if ($courses = $this->getStudentsCourses(true)) {
+			$courses = array_keys($courses);
+			
+		}
+	    return false;
+	}
+	
+/**
+ * Gets all the courses related to this user, given that
+ * it is a student. (Needed for the dashboard overview)
+ * 
+ * @param boolean $list: return a list (true) or full dataset [default]
+ */
+	function getStudentsCourses($list=false) {
+		if ($student = $this->getStudentIdFromSession()) {
+			
+			$conditions = array(
+				'joins' => array(
+					array(
+						'table' => 'students_courses',
+						'alias' => 'StudentsCourse',
+						'type' => 'inner',
+						'conditions' => array(
+							'StudentsCourse.student_id' => $student,		
+						)
+					)
+				),
 	        );
-	        $assigned = $this->Student->Course->find('list', $conditions);
-	        $all = $this->getUsersCourses($student, true);
-                return array_diff($all, $assigned);
+			if ($list) {
+				$conditions['fields'] = array('Course.id', 'Course.name'); 
+			}
+			$list = ($list) ? 'list' : 'all';
+		
+	        $courses = $this->Student->Course->find($list, $conditions);
+	
+			return $courses;
 	    }
 	    return false;
 	}

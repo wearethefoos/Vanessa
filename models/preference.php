@@ -151,24 +151,6 @@ class Preference extends AppModel {
 		
 	}
 	
-	/**
-	 * Get ID of the logged in student from the session, if any.
-	 * 
-	 * @return mixed array with student data | false
-	 */
-	public function getStudentIdFromSession() {
-		App::import('Core', 'Controller');
-		App::import('Core', 'SessionComponent');
-		$Controller = new Controller();		
-		$Session = new SessionComponent();
-		$Session->startup($Controller);
-		
-		if ($student_id = $Session->read('Auth.User.student_id')) {
-			return $student_id;
-		} else {
-			$this->log('Trying to get studentId failed.. Not a student?');
-			return false;
-		}
-	}
+	
 }
 ?>

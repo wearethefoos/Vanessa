@@ -28,8 +28,11 @@ class CoursesController extends AppController {
 			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'course'));
 			$this->redirect(array('action' => 'index'));
 		}
+		
+		$preferences = $this->Course->getStudentsPreferences($id);
+		
+		$this->set('preferences', $preferences);
 		$this->set('course', $this->Course->read(null, $id));
-		$this->set('preferences', $this->Course->getStudentsPreferences($id, $this->Session->read('Auth.User.student_id')));
 	}
 
 	function admin_index() {
@@ -105,6 +108,7 @@ class CoursesController extends AppController {
 							$student_data['User']['student_id'] = $student_id;
 							$student_data['User']['username'] = $uvanetid;
 							$student_data['User']['activated'] = 1;
+							$student_data['User']['role_id'] = STUDENT;
 							$this->Course->User->create();
 							$this->Course->User->save($student_data);
 						}

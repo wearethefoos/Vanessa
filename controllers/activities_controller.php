@@ -3,10 +3,13 @@ class ActivitiesController extends AppController {
 
 	var $name = 'Activities';
 	
-	function index() {}
-	function view($id=null) {}
-	function subscribe($id=null) {}
-	function unsubscribe($id=null) {}
+	function view($id = null) {
+		if (!$id) {
+			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'activity'));
+			$this->redirect(array('action' => 'index'));
+		}
+		$this->set('activity', $this->Activity->read(null, $id));
+	}
 
 	function admin_index() {
 		$this->Activity->recursive = 0;

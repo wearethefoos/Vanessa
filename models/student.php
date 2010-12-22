@@ -39,7 +39,9 @@ class Student extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		));
+		),
+		'Solution',
+		);
 
    var $hasOne = array(
 		'User' => array(

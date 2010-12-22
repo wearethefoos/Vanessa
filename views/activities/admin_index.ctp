@@ -3,8 +3,11 @@
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id');?></th>
-			<th><?php echo $this->Paginator->sort('teacher');?></th>
 			<th><?php echo $this->Paginator->sort('course_id');?></th>
+			<th><?php echo $this->Paginator->sort('name');?></th>
+			<th><?php echo $this->Paginator->sort('teacher');?></th>
+			<th><?php echo $this->Paginator->sort('room');?></th>
+			<th><?php echo $this->Paginator->sort('description');?></th>
 			<th><?php echo $this->Paginator->sort('max_participants');?></th>
 			<th><?php echo $this->Paginator->sort('min_participants');?></th>
 			<th class="actions"><?php __('Actions');?></th>
@@ -19,8 +22,13 @@
 	?>
 	<tr<?php echo $class;?>>
 		<td><?php echo $activity['Activity']['id']; ?>&nbsp;</td>
+		<td>
+			<?php echo $this->Html->link($activity['Course']['name'], array('controller' => 'courses', 'action' => 'view', $activity['Course']['id'])); ?>
+		</td>
+		<td><?php echo $activity['Activity']['name']; ?>&nbsp;</td>
 		<td><?php echo $activity['Activity']['teacher']; ?>&nbsp;</td>
-		<td><?php echo $this->Html->link($activity['Course']['name'], array('controller' => 'courses', 'action' => 'view', $activity['Course']['id'])); ?>&nbsp;</td>
+		<td><?php echo $activity['Activity']['room']; ?>&nbsp;</td>
+		<td><?php echo $activity['Activity']['description']; ?>&nbsp;</td>
 		<td><?php echo $activity['Activity']['max_participants']; ?>&nbsp;</td>
 		<td><?php echo $activity['Activity']['min_participants']; ?>&nbsp;</td>
 		<td class="actions">
@@ -39,19 +47,19 @@
 	?>	</p>
 
 	<div class="paging">
-		<?php echo $this->Paginator->prev('<< '.__('previous', true), array(), null, array('class'=>'disabled'));?>
+		<?php echo $this->Paginator->prev('<< ' . __('previous', true), array(), null, array('class'=>'disabled'));?>
 	 | 	<?php echo $this->Paginator->numbers();?>
  |
-		<?php echo $this->Paginator->next(__('next', true).' >>', array(), null, array('class' => 'disabled'));?>
+		<?php echo $this->Paginator->next(__('next', true) . ' >>', array(), null, array('class' => 'disabled'));?>
 	</div>
 </div>
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Activity', true)), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Placements', true)), array('controller' => 'placements', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Placement', true)), array('controller' => 'placements', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Students Preferences', true)), array('controller' => 'students_preferences', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Students Preference', true)), array('controller' => 'students_preferences', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Activity', true), array('action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('List Courses', true), array('controller' => 'courses', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Course', true), array('controller' => 'courses', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Join Activity Groups', true), array('controller' => 'join_activity_groups', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Join Activity Group', true), array('controller' => 'join_activity_groups', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
