@@ -27,8 +27,11 @@ class CoursesController extends AppController {
 			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'course'));
 			$this->redirect(array('action' => 'index'));
 		}
+		
+		$preferences = $this->Course->getStudentsPreferences($id);
+		
+		$this->set('preferences', $preferences);
 		$this->set('course', $this->Course->read(null, $id));
-		$this->set('preferences', $this->Course->getStudentsPreferences($id, $this->Session->read('Auth.User.student_id')));
 	}
 
 	function admin_index() {
@@ -74,8 +77,10 @@ class CoursesController extends AppController {
 							$lookup   = $student
 							);
                   if ($result_lookup === false)  { // Could not connect to LDAP
+					 $this->log('Could not connect to LDAP');
                      break;
                   } else if ($result_lookup == -1) { // User not found in LDAP
+						$this->log(sprintf('Student %s not found.', $student));
    						$students_not_found[] = $student;
                   } else {
                      $student_data = $result_lookup;
@@ -93,6 +98,7 @@ class CoursesController extends AppController {
 							$student_data['User']['student_id'] = $student_id;
 							$student_data['User']['username'] = $student;
 							$student_data['User']['activated'] = 1;
+							$student_data['User']['role_id'] = STUDENT;
 							$this->Course->User->create();
 							$this->Course->User->save($student_data);
 						}
@@ -117,7 +123,7 @@ class CoursesController extends AppController {
             if (count($students_not_found) > 0) {
                $this->Session->setFlash(__('One or more UvAnetID\'s not found', true), 'flash/modal', array('class' => 'error'));
             }
-				$this->set('studentsnotfound', $students_not_found);
+			$this->set('studentsnotfound', $students_not_found);
 			} else {
 				$this->Session->setFlash(__('Please enter your password', true), array('flash/modal'), array('class' => 'error'));
 			}

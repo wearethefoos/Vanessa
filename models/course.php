@@ -108,6 +108,39 @@ class Course extends AppModel {
 		}
 		return false;
 	}
+	
+	function getStudentsPreferences($id) {
+		$student_group_id = $this->getStudentsGroupIdForThisCourse($id);
+		return $this->StudentGroup->find('all', array(
+			'conditions' => array(
+				'StudentGroup.course_id' => $id,
+				'StudentGroup.id' => $student_group_id,
+			)
+		));
+	}
+	
+	/**
+	 * Get students_group id on a specific course for a logged in student.
+	 * 
+	 * @param $course_id
+	 * 
+	 * @return mixed students_group_id | false
+	 */
+	public function getStudentsGroupIdForThisCourse($id) {
+		if ($student_id = $this->getStudentIdFromSession()) {
+			if ($group = $this->StudentGroup->JoinStudentGroup->find('first', array(
+				'conditions' => array(
+					'JoinStudentGroup.student_id' => $student_id,
+					'StudentGroup.course_id' => $course_id,
+					)
+				))) {
+					return $group['StudentGroup']['id'];
+				}
+		} else {
+			return false;
+		}
+		
+	}
 
 }
 ?>

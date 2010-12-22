@@ -11,8 +11,8 @@
 	</div>
 <?php else : 
 
-    echo $this->Html->script('delegate');
-    echo $this->Html->script('sortable');
+    echo $this->Html->script('s2.delegate');
+    echo $this->Html->script('s2.sortable');
 ?>
 		<div class="header"></div>
 		<div id="tree" class="activities">
@@ -59,7 +59,7 @@
 				})
 				new Ajax.Updater('basket', '<?php
 					echo $this->Html->url(array(
-						'controller' => 'students_preferences',
+						'controller' => 'preferences',
 						'action' => 'add',
 						$course['Course']['id'],
 					));?>', {

@@ -105,7 +105,7 @@ class LdapLookupComponent extends Object {
       $attrsonly = false;
       $sizelimit = 1;
 	  $dn = $this->studentDn.$this->baseDn; // TODO: we will only lookup students for now..
-	  $role_id = 11; // student role_id
+	  $role_id = STUDENT; // student role_id
       $lookup_user = ldap_search($this->ds, $dn, $filter, $attributes, $attrsonly, $sizelimit);
       // retrieve information
       $entry = ldap_get_entries($this->ds, $lookup_user);

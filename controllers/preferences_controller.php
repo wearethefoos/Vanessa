@@ -3,10 +3,36 @@ class PreferencesController extends AppController {
 
 	var $name = 'Preferences';
 	
-	
-	function view($id=null) {}
-	function edit($id=null) {}
-	function delete($id=null) {}
+	function add($course_id=null) {
+		if (!$course_id) {
+			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'course'));
+			$this->redirect(array('/'));
+		}
+		
+		$likes = $this->params['form']['prefs'];
+		$dislikes = $this->params['form']['noprefs'];
+		
+		$likes = trim($likes, '[]');
+		$dislikes = trim($dislikes, '[]');
+		
+		$likes = explode(',', $likes);
+		$dislikes = explode(',', $dislikes);
+		
+		debug($likes);
+		debug($dislikes);
+		
+		if ($this->Preference->savePreferences($likes, $dislikes)) {
+			$this->Session->setFlash(__('Your cherries are now save! :)', true), 'message/flash', array('class' => 'success'));
+		} else {
+			$this->Session->setFlash(__('Your cherries could not be saved! :( Plz try again!', true), 'message/flash', array('class' => 'error'));
+		}
+		
+		$this->redirect(array(
+			'controller' => 'courses',
+			'action' => 'pick',
+			$course_id,
+		));
+	}
 
 	function admin_index() {
 		$this->Preference->recursive = 0;
