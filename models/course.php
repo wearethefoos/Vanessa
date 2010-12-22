@@ -27,7 +27,7 @@ class Course extends AppModel {
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
-		'User' => array(
+		'Supervisor' => array(
 			'className' => 'User',
 			'foreignKey' => 'user_id',
 			'conditions' => '',
@@ -108,6 +108,32 @@ class Course extends AppModel {
 		}
 		return false;
 	}
+
+   function findCourse($course_id) {
+      return $this->find('first', array(
+         'conditions' => array(
+            'id' => $course_id
+            ),
+         'contain' => array(
+            'Student.User',
+            'Supervisor'
+            )
+         ));
+   }
+
+   function findStudents($course_id) {
+      $students = $this->find('first', array(
+         'conditions' => array(
+            'id' => $course_id
+            ),
+         'contain' => array(
+            'Student.User',
+            )
+         ));
+      $students = (isset($students['Student']) && count($students['Student'])) ? $students['Student'] : array();
+
+      return $students;
+   }
 
 }
 ?>

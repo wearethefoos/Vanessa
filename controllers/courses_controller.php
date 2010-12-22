@@ -2,6 +2,7 @@
 class CoursesController extends AppController {
 
 	var $name = 'Courses';
+   var $uses = array('Course', 'Email');
 	var $components = array('LdapLookup');
 	
 	function index() {
@@ -153,15 +154,8 @@ class CoursesController extends AppController {
 			$this->data = $this->Course->read(null, $course_id);
 		}
 
-      $students = $this->Course->find('first', array(
-         'conditions' => array(
-            'id' => $course_id
-            ),
-         'contain' => array(
-            'Student.User'
-            )
-         ));
-		$students = (isset($students['Student']) && count($students['Student'])) ? $students['Student'] : array();
+      $students = $this->Course->findStudents($course_id);
+
       $this->set(compact('students'));
 
 	}
@@ -219,10 +213,32 @@ class CoursesController extends AppController {
 	}
 
    function admin_delete_invite($course_id, $student_id) {
+		if (!$course_id && !$student_id) {
+			$this->Session->setFlash(sprintf(__('Invalid %s', true), ($course_id ? 'student' : 'course')));
+			$this->redirect(array('action' => 'index'));
+		}
       $this->Course->StudentsCourse->deleteAll(array(
          'StudentsCourse.student_id' => $student_id,
          'StudentsCourse.course_id'  => $course_id
          ));
+      $this->redirect(array('action' => 'admin_invite/' . $course_id));
+   }
+
+   function admin_send_email_invitation($course_id) {
+		if (!$course_id) {
+			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'course'));
+			$this->redirect(array('action' => 'index'));
+		}
+      $course = $this->Course->findCourse($course_id);
+      $students = $course['Student'];
+
+      $course_name = $course['Course']['name'];
+      $supervisor = $course['Supervisor'];
+
+      foreach ($students as $student) {
+         $this->Email->sendCourseInvitation($student, $course_name, $supervisor);
+      }
+
       $this->redirect(array('action' => 'admin_invite/' . $course_id));
    }
 }
