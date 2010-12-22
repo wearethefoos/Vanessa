@@ -111,10 +111,9 @@ class Course extends AppModel {
 	
 	function getStudentsPreferences($id) {
 		$student_group_id = $this->getStudentsGroupIdForThisCourse($id);
-		return $this->StudentGroup->find('all', array(
+		return $this->StudentGroup->Preference->find('all', array(
 			'conditions' => array(
-				'StudentGroup.course_id' => $id,
-				'StudentGroup.id' => $student_group_id,
+				'Preference.student_group_id' => $student_group_id,
 			)
 		));
 	}
@@ -131,7 +130,7 @@ class Course extends AppModel {
 			if ($group = $this->StudentGroup->JoinStudentGroup->find('first', array(
 				'conditions' => array(
 					'JoinStudentGroup.student_id' => $student_id,
-					'StudentGroup.course_id' => $course_id,
+					'StudentGroup.course_id' => $id,
 					)
 				))) {
 					return $group['StudentGroup']['id'];

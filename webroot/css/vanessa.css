@@ -53,7 +53,9 @@ div.course, div.assignment {
 div.course.waiting {
 	background: url(../img/waiting.png) right 50% no-repeat;
 	padding-right: 300px;
-	display: inline;
+	display: inline-block;
+	clear: both;
+	margin-right: -300px;
 	clear: both;
 }
 div.course.waiting a {

@@ -18,11 +18,12 @@ class PreferencesController extends AppController {
 		$likes = explode(',', $likes);
 		$dislikes = explode(',', $dislikes);
 		
-		debug($likes);
-		debug($dislikes);
+		//$likes = array_combine(array_values($likes), array_keys($likes));
+		//$dislikes = array_combine(array_values($dislikes), array_keys($dislikes));
 		
 		if ($this->Preference->savePreferences($likes, $dislikes)) {
-			$this->Session->setFlash(__('Your cherries are now save! :)', true), 'message/flash', array('class' => 'success'));
+			$this->autoRender = false;
+			die(__('Your cherries are now save! :)', true));
 		} else {
 			$this->Session->setFlash(__('Your cherries could not be saved! :( Plz try again!', true), 'message/flash', array('class' => 'error'));
 		}

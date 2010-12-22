@@ -144,11 +144,16 @@ class User extends AppModel {
  *
  */	
 	function getStudentsUnpreferenced() {
-	    if ($courses = $this->getStudentsCourses()) {
+	    if ($courses = $this->getStudentsCourses(true)) {
 						
 			foreach ($courses as $course_id => $course_name) {
-				if ($this->Student->Course->getStudentsGroupIdForThisCourse($course_id)) {
-					unset ($courses[$course_id]);
+				if ($group_id = $this->Student->Course->getStudentsGroupIdForThisCourse($course_id)) {
+					if ($this->Student->JoinStudentGroup->StudentGroup->Preference->find('count', array(
+						'conditions' => array(
+							'Preference.student_group_id' => $group_id,
+					)))) {
+						unset ($courses[$course_id]);
+					}
 				}
 			}
 			
@@ -183,8 +188,19 @@ class User extends AppModel {
  */
 	function getStudentsUnassigned($student=null) {
 	    if ($courses = $this->getStudentsCourses(true)) {
-			$courses = array_keys($courses);
+			$placements = $this->getStudentsPlacements();
 			
+			foreach ($placements as $placement) {
+				unset($courses[$placement['Solution']['course_id']]);
+			}
+			
+			foreach ($courses as $course_id => $course_name) {
+				if (!$this->Student->Course->getStudentsGroupIdForThisCourse($course_id)) {
+					unset ($courses[$course_id]);
+				}
+			}
+			
+			return $courses;
 		}
 	    return false;
 	}
