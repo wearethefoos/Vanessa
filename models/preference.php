@@ -72,6 +72,8 @@ class Preference extends AppModel {
 	public function writeLikes($likes=array()) {
 		foreach ($likes as $unwantedness => $like) {
 			if (!$this->writePreference($like, $unwantedness)) {
+				$this->log('Could not write like!');
+				debug($likes);
 				return false;
 			}
 		}
@@ -87,6 +89,7 @@ class Preference extends AppModel {
 	public function writeDislikes($dislikes=array()) {
 		foreach ($dislikes as $dislike) {
 			if (!$this->writePreference($dislike, DISLIKE)) {
+				$this->log('Could not write dislike!');
 				return false;
 			}
 		}
@@ -104,16 +107,19 @@ class Preference extends AppModel {
 	public function writePreference($preference, $unwantedness) {
 		$this->create();
 		$data = $this->createNewPreference($preference, $unwantedness);
+		debug($data);
 		return $this->save($data);
 	}
 	
 	public function createNewPreference($preference, $unwantedness) {
-		$course_id = $this->getCourseFromActivityId($preference);
-		$student_group_id = $this->getStudentsGroupIdForThisCourse($course_id);
+		debug($preference);
+		$course_id = $this->getCourseFromActivityId(trim($preference, '[\']'));
+		debug($course_id);
+		$student_group_id = $this->StudentGroup->Course->getStudentsGroupIdForThisCourse($course_id);
 		return array(
 			'student_group_id' => $student_group_id,
-			'activity_id' => $preference,
-			'unwantedness' => $unwantedness
+			'activity_id' => trim($preference, '[\']'),
+			'unwantedness' => trim($unwantedness, '[\']')
 		);
 	}
 	

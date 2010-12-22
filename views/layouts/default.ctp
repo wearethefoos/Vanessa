@@ -65,8 +65,8 @@
 			
 			<div id="content-inner"><?php echo $content_for_layout; ?></div>
 			<?php 
-				$section['Assignments'] = array('assignments', 'placements', 'students_preferences', 'solutions');
-				$section['Courses'] = array('courses', 'activities', 'preferences');
+				$section['Assignments'] = array('assignments', 'placements', 'student_groups', 'preferences', 'solutions');
+				$section['Courses'] = array('courses', 'activities');
 				
 				$current_section = Router::getParams(); $current_section = $current_section['controller']; 
 			?>

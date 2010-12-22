@@ -39,11 +39,13 @@
 	<?php foreach ($courses as $course) : ?>
         <?php
             $class = 'course';
+			$controller = 'courses';
 			$action = 'view';
 			$extra_action = null;
             if (isset($unpreferenced[$course['Course']['id']])) {
                 $class = 'course waiting'; // awaiting preferencing by student
-				$action = 'pick';
+				$controller = 'student_groups';
+				$action = 'choose';
             } elseif (isset($unassigned[$course['Course']['id']])) {
                 $class = 'course pending'; // awaiting assignment by teacher
 			} elseif ($this->Session->read('Auth.User.role_id') <= TEACHER) { // add an extra link for teachers to invite students
@@ -59,9 +61,9 @@
 			}
         ?>
 	<div class="<?php echo $class; ?>" title="<?php echo $course['Course']['description']; ?>">
-		<?php echo $this->Html->link($course['Course']['name'], array('controller' => 'courses', 'action' => $action, $course['Course']['id']))?> 
+		<?php echo $this->Html->link($course['Course']['name'], array('controller' => $controller, 'action' => $action, $course['Course']['id']))?> 
 		<?php echo $extra_action; ?>
-	</div>
+	</div><br />
 	<?php endforeach; ?>
 </div>
 <script>
