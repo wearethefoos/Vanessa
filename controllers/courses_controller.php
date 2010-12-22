@@ -2,11 +2,11 @@
 class CoursesController extends AppController {
 
 	var $name = 'Courses';
-   var $uses = array('Course', 'Email');
+   var $uses = array('Course', 'Email', 'User');
 	var $components = array('LdapLookup');
 	
 	function index() {
-		$this->set('courses', $this->Course->User->getUsersCourses($this->Session->read('Auth.User.id'), $this->Session->read('Auth.User.student_id')));
+		$this->set('courses', $this->Course->Supervisor->getUsersCourses($this->Session->read('Auth.User.id'), $this->Session->read('Auth.User.student_id')));
 	}
 	
 	function view($id) {
@@ -61,7 +61,7 @@ class CoursesController extends AppController {
                   continue;
                }
                // Can we find this uvanetid in the user table
-					$student_data = $this->Course->User->find('first', array(
+					$student_data = $this->User->find('first', array(
 						'conditions' => array('username' => $uvanetid),
 						'contain' => array('Role', 'Student')
 						));
@@ -75,9 +75,9 @@ class CoursesController extends AppController {
                            'coll_kaart' => $uvanetid,
                            'ldap_uid'   => $uvanetid,
                         ));
-                     $this->Course->User->Student->create();
-                     $this->Course->User->Student->save($new_student);
-                     $student_id = $this->Course->User->Student->id;
+                     $this->User->Student->create();
+                     $this->User->Student->save($new_student);
+                     $student_id = $this->User->Student->id;
                   }
                } else {
                   // This user is not in the database yet.
@@ -99,9 +99,9 @@ class CoursesController extends AppController {
 									'coll_kaart' => $uvanetid,
 									'ldap_uid'   => $uvanetid,
 								));
-							$this->Course->User->Student->create();
-							$this->Course->User->Student->save($new_student);
-							$student_id = $this->Course->User->Student->id;
+							$this->User->Student->create();
+							$this->User->Student->save($new_student);
+							$student_id = $this->User->Student->id;
 							
 							/* set extra vars for user account */
 							$student_data['User']['password'] = 'password';
@@ -109,8 +109,8 @@ class CoursesController extends AppController {
 							$student_data['User']['username'] = $uvanetid;
 							$student_data['User']['activated'] = 1;
 							$student_data['User']['role_id'] = STUDENT;
-							$this->Course->User->create();
-							$this->Course->User->save($student_data);
+							$this->User->create();
+							$this->User->save($student_data);
 						}
 					}
 
