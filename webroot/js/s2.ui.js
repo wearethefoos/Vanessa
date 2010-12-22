@@ -54,10 +54,15 @@ function setToLeftOfOtherElementsPosition(element, otherElement) {
     // Can sometimes happen if the pointer exited the window during
     // mousedown.
     //if (!this._startPointer) return;
+
     var delta = {
       x: containerLayout.get('margin-left') + otherElementsLayout.get('left') - elementsLayout.get('width'),
       y: containerLayout.get('margin-top') + otherElementsLayout.get('top')
     };
+
+    if (Prototype.Browser.IE || Prototype.Browser.Gecko) {
+       delta.x += elementsLayout.get('width');
+    }
 
     var newPosition = {
       left: delta.x + 'px',

@@ -1,10 +1,15 @@
 <script language="javascript">
 document.observe('dom:loaded', function() {
-  $('flashMessage').morph('top:0px;', { duration:1.3, transition: 'elastic' });
-  setTimeout(function() {
-    $('flashMessage').morph('top:-100px;', { duration:1.3, transition: 'easeTo' });
-  },
-  10000);
+   <?php if (!isset($class)) $class='default-'; ?>
+   if ($('flashMessage')) {
+     $('flashMessage').addClassName('<?php echo $class ?>');
+     $('flashMessage').update('<?php echo $message; ?>');
+     $('flashMessage').morph('top:0px;', { duration:1.3, transition: 'elastic' });
+     setTimeout(function() {
+       $('flashMessage').morph('top:-100px;', { duration:1.3, transition: 'easeTo' });
+     },
+     10000);
+   }
 });
 </script>
 
@@ -38,5 +43,3 @@ document.observe('dom:loaded', function() {
   }
 -->
 </style>
-<?php if (!isset($class)) $class='default-'; ?>
-<div id="flashMessage" class="modal <?php echo $class; ?>"><?php echo $message; ?></div>

@@ -145,7 +145,7 @@ class Course extends AppModel {
    function findCourse($course_id) {
       return $this->find('first', array(
          'conditions' => array(
-            'id' => $course_id
+            'Course.id' => $course_id
             ),
          'contain' => array(
             'Student.User',

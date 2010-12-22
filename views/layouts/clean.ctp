@@ -40,6 +40,7 @@
 	?>
 </head>
 <body>
+         <div id="flashMessage" class="modal" style="z-index: 10"></div>
 	
 			<?php echo $this->Session->flash(); ?>
 	<div id="login">

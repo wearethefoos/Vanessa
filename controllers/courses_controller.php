@@ -228,22 +228,29 @@ class CoursesController extends AppController {
       $this->redirect(array('action' => 'admin_invite/' . $course_id));
    }
 
-   function admin_send_email_invitation($course_id) {
+   function admin_send_invitation_emails($course_id) {
+		$this->layout = 'js/json';
+
+      $message = '';
+      $type = 'success';
 		if (!$course_id) {
-			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'course'));
-			$this->redirect(array('action' => 'index'));
-		}
-      $course = $this->Course->findCourse($course_id);
-      $students = $course['Student'];
+         $message = __('Wrong course id', true);
+         $type = 'error';
+		} else {
+         $course = $this->Course->findCourse($course_id);
+         $students = $course['Student'];
 
-      $course_name = $course['Course']['name'];
-      $supervisor = $course['Supervisor'];
+         $course_name = $course['Course']['name'];
+         $supervisor = $course['Supervisor'];
 
-      foreach ($students as $student) {
-         $this->Email->sendCourseInvitation($student, $course_name, $supervisor);
+         foreach ($students as $student) {
+            $this->Email->sendCourseInvitation($student, $course_name, $supervisor);
+         }
+         $message = __('Mails to students are successfully send!', true);
       }
 
-      $this->redirect(array('action' => 'admin_invite/' . $course_id));
+      $result = array('message' => $message, 'type' => $type);
+      $this->set('json', $result);
    }
 }
 ?>

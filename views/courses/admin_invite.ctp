@@ -36,6 +36,33 @@
       });
    }
 
+   function show_message(msg, type) {
+      $('flashMessage').removeClassName('error');
+      $('flashMessage').removeClassName('success');
+      $('flashMessage').addClassName(type);
+      $('flashMessage').update(msg);
+      $('flashMessage').morph('top:0px;', { duration:1.3, transition: 'elastic' });
+      setTimeout(
+            function() {$('flashMessage').morph('top:-100px;', { duration:1.3, transition: 'easeTo' });},
+            10000);
+   }
+
+   function send_invitation_emails(course_id) {
+      <?php
+         echo 'url = "' . $this->Html->url(array('action' => 'send_invitation_emails', 'admin' => true)) . '/";';
+      ?>
+      ajax = new Ajax.Request(url + course_id,
+      {
+         onSuccess: function(transport) {
+            var json = transport.responseText.evalJSON();
+            show_message(json.message, json.type);
+         },
+         onFailure: function() {
+            show_message('Error when sending emails', 'error');
+         }
+      });
+   }
+
 
 </script>
 <div class="courses">
@@ -61,6 +88,10 @@
 			'between' => '<div class="help"><p>' . __('I need your UvAnetID password to look up the students you add in the UvA directory service.', true) . '</p></div>'
 			));
 		echo $this->Form->end(__('Invite!', true));
+      echo $this->Form->button(__('Send invitations email to students', true), array(
+                        'type' => 'button',
+                        'onclick' => 'send_invitation_emails(' . $this->data['Course']['id'] . ')'
+      ));
 	?>
 	<div class="students">
 		<h3><?php __('Assigned Students'); ?></h3>

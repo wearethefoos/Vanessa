@@ -3,8 +3,8 @@
 <?php
     echo $form->create('User', array('action' => 'login'));
     echo $form->input('username', array('value' => 'UvAnetID', 'label' => false, 'onfocus' => 'if (this.value == "UvAnetID") this.value = "";', 'onblur' => 'if (this.value=="") this.value="UvAnetID";'));
-    echo $form->input('password', array('type' => 'password', 'label' => false, 'onblur' => 'if (this.value=="") {$($(this).parentNode).hide();$($("TextPassword").parentNode).show()}'));
-    echo $form->input('text', array('value' => __('Password', true), 'type' => 'text', 'label' => false, 'id' => 'TextPassword', 'onfocus' => '$($(this).parentNode).hide();$($("UserPassword").parentNode).show();$("UserPassword").focus()'));
+    echo $form->input('password', array('type' => 'password', 'label' => false, 'onblur' => 'if (this.value=="") {$(this).up().hide();$("TextPassword").up().show()}'));
+    echo $form->input('text', array('value' => __('Password', true), 'type' => 'text', 'label' => false, 'id' => 'TextPassword', 'onfocus' => '$(this).up().hide();$("UserPassword").up().show();$("UserPassword").focus()'));
     echo $form->end();
 ?>
 <div id="vanessa" class="vanessa"></div>
@@ -16,7 +16,7 @@
 </style>
 <script language="javascript">
 document.observe('dom:loaded', function() {
-   $($("UserPassword").parentNode).hide();
+   $("UserPassword").up().hide();
 	$('speech-bubble').hide();
 	setTimeout(function() {
   	$('login').morph('top:250px;', { duration:1.3, transition: 'elastic' });

@@ -90,24 +90,22 @@ class LdapAuthComponent extends AuthComponent {
       $security_log_record['username'] = $uvanetid;
       
       $state_UserValidated = false;
-      $state_UpdateUserInDPMS = false;
-      $state_AddUserInDPMS = false;
-      $state_ActivateUser = false;
-      $state_ResetPassword = false;
+      $state_UpdateUser = false;
+      $state_AddUser = false;
 
-      // Check whether this uvanetid is already registered in DPMS
+      // Check whether this uvanetid is already registered in the database
       $usermodel = new User();
       $result = $usermodel->find('first', array('conditions' => array('User.username' => $uvanetid)));
       if (!$result){
-         // If the user does not exist in DPMS, check whether it exists in LDAP.
+         // If the user does not exist in the database, check whether it exists in LDAP.
          $result = $this->_ldapIdentify($uvanetid, $password);
          if ($result  !== false) {
-            // This user exists in ldap but not in DPMS
-            // Add it to DPMS and send him to the 2nd step of the registration
+            // This user exists in ldap but not in the database
+            // Add it to the database and send him to the 2nd step of the registration
             $result['User']['username'] = $uvanetid;
             $result['User']['password'] = $this->password($password);
             $state_UserValidated = true;
-            $state_AddUserInDPMS = true;
+            $state_AddUser = true;
          }
       }
       else {
@@ -115,20 +113,20 @@ class LdapAuthComponent extends AuthComponent {
          if ($result['User']['password'] == $this->password($password))
             $state_UserValidated = true;
          else {
-               // This LDAP user exists in DPMS, but has a wrong password
+               // This LDAP user exists in the database, but has a wrong password
                // Check whether the password has not changed in LDAP
                $ldap_data = $this->_ldapIdentify($uvanetid, $password);
                if ($ldap_data !== false) {
-                  // This LDAP user is in DPMS but apparently, his
-                  // password has changed. This must be updated in DPMS.
+                  // This LDAP user is in the database but apparently, his
+                  // password has changed. This must be updated in the database.
                   // It's maybe not a good idea to update the user data
-                  // with the ldap data: this user is already registered in DPMS,
+                  // with the ldap data: this user is already registered in the database,
                   // only his password has been changed. But the user does
                   // not expect that his data are suddenly updated with ldap data.
                   //$result['User'] = array_merge($result['User'], $ldap_data['User']);
                   //$result['UserInfo'] = array_merge($result['UserInfo'], $ldap_data['UserInfo']);
                   $result['User']['password'] = $this->password($password);
-                  $state_UpdateUserInDPMS = true;
+                  $state_UpdateUser = true;
                   $state_UserValidated = true;
                }
          }
@@ -137,30 +135,22 @@ class LdapAuthComponent extends AuthComponent {
       $security_log_record['user_id'] = isset($result['User']['id']) ? $result['User']['id'] : null;
 
       // If the login/password has been validated, 5 cases can occur:
-      //    . The user has an uvanetid, but is not yet registered in DPMS
-      //      (state_AddUserInDPMS is true)
-      //      -> The data from LDAP must be stored in DPMS, and the
+      //    . The user has an uvanetid, but is not yet registered in the database
+      //      (state_AddUser is true)
+      //      -> The data from LDAP must be stored in the database, and the
       //         user must go to the 2nd step of the registration procedure
-      //    . The user has an uvanetid and is registered in DPMS, but his password
-      //      in DPMS is not equal to the password in LDAP.
-      //      (state UpdateUserInDPMS is true)
-      //      -> Change the data in DPMS
-      //    . The user is registered in DPMS, but not in SPT (the user_info is
-      //      empty).
-      //      (state_AddUserInSPT is true)
-      //      -> He must go to the 2nd step of the registration procedure
-      //    . The user is registered in DPMS and SPT, he is not an LDAP user
-      //      and is not yet activated (state_ActivateUser is true)
-      //      -> He must go to the activation procedure.
-      //    . The user is registered in DMPS and SPT, he is an LDAP user or
-      //      he is activated
-      //      -> He can go on to the available projects page.
+      //    . The user has an uvanetid and is registered in the database, but his password
+      //      in the database is not equal to the password in LDAP.
+      //      (state UpdateUser is true)
+      //      -> Change the data in the database
+      //    . The user is registered in the database, he is an LDAP user
+      //      -> He can go on to the dashboard.
       if (!$state_UserValidated) {
          $this->Session->setFlash(__('I don\'t know you by either that name or that password!', true), 'flash/modal', array('class' => 'error'));
          $login_status = 'denied';
          $result = false;
       }
-      else if ($state_AddUserInDPMS) {
+      else if ($state_AddUser) {
          // If the $user_data does not contain a user id, the resister2 method will add a new user in DPMS
          $login_status = 'not yet registered';
          $this->Session->write('user_data', $result['User'] );
@@ -170,7 +160,7 @@ class LdapAuthComponent extends AuthComponent {
          // By setting _loggedIn to true, the redirection will work
          $this->_loggedIn = true;
       }
-      else if ($state_UpdateUserInDPMS) {
+      else if ($state_UpdateUser) {
          // save does not work here... The user model is here not initialized with the Acl
          // component, and misses the Aro object.
          // So we call a special udpatePwd function
