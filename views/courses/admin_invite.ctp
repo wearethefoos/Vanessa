@@ -1,3 +1,5 @@
+<?php // Dummy tag so that NetBeans understands that this file is a PHP file
+?>
 <script>
    var sort_order = 'asc';
    var sort_uvanetid_fn = function(a,b) {
@@ -42,8 +44,7 @@
       $students_not_found = '';
       if (isset($studentsnotfound)) {
          foreach ($studentsnotfound as $student_nummer) {
-            $students_not_found = $student_nummer . '
-';
+            $students_not_found .= $student_nummer . chr(13);
          }
       }
 		echo $this->Form->create('Course');
@@ -78,7 +79,7 @@
 				<tr>
 					<td><?php echo $student['coll_kaart']; ?></td>
 					<td><?php echo $student['User']['name']; ?></td>
-               <td><?php echo $this->Html->link($this->Html->image('delete.png'), array('action' => 'delete_invite', $student['id']), array('escape' => false)); ?></td>
+               <td><?php echo $this->Html->link($this->Html->image('delete.png'), array('action' => 'delete_invite', $this->data['Course']['id'], $student['id']), array('escape' => false)); ?></td>
 				</tr>
 			<?php endforeach; ?>
 			<tbody>

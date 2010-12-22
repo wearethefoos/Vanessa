@@ -48,46 +48,50 @@ class CoursesController extends AppController {
 			$course_id = ($course_id) ? $course_id : $this->data['Course']['id'];
 		}
 		if (!empty($this->data)) {
+         $wrong_password = false;
+         $students_not_found = array();
 			if (isset($this->data['Course']['password'])) {
-				$students_not_found = array();
 				$students = explode("\n", $this->data['Course']['students']);
-				foreach ($students as $student) {
-					$student = trim($student);
+				foreach ($students as $uvanetid) {
+					$uvanetid = trim($uvanetid);
+               // Can we find this uvanetid in the user table
 					$student_data = $this->Course->User->find('first', array(
-						'conditions' => array('username' => $student),
+						'conditions' => array('username' => $uvanetid),
 						'contain' => array('Role', 'Student')
 						));
-					if (isset($student_data['Student']['id']) && $student_data['Student']['id']) {
-						$student_id = $student_data['Student']['id'];
-					} elseif ($student_data) {
-						$new_student = array(
-							'Student' => array(
-								'coll_kaart' => $student,
-								'ldap_uid'   => $student,
-							));
-						$this->Course->User->Student->create();
-						$this->Course->User->Student->save($new_student);
-						$student_id = $this->Course->User->Student->id;
-					}
-					
-					if (!$student_data) {
+               // If this user exists, check whether it is also in the student table, if not add it
+               if ($student_data) {
+                  if (isset($student_data['Student']['id']) && $student_data['Student']['id']) {
+                     $student_id = $student_data['Student']['id'];
+                  } else {
+                     $new_student = array(
+                        'Student' => array(
+                           'coll_kaart' => $uvanetid,
+                           'ldap_uid'   => $uvanetid,
+                        ));
+                     $this->Course->User->Student->create();
+                     $this->Course->User->Student->save($new_student);
+                     $student_id = $this->Course->User->Student->id;
+                  }
+               } else {
+                  // This user is not in the database yet.
+                  // Check whether it exists in LDAP
 						$result_lookup = $this->LdapLookup->find(
-							$uvanetid = $this->Session->read('Auth.User.username'),
-							$password = $this->data['Course']['password'],
-							$lookup   = $student
+							$this->Session->read('Auth.User.username'),
+							$this->data['Course']['password'],
+							$uvanetid
 							);
                   if ($result_lookup === false)  { // Could not connect to LDAP
-					 $this->log('Could not connect to LDAP');
+                     $wrong_password = true;
                      break;
                   } else if ($result_lookup == -1) { // User not found in LDAP
-						$this->log(sprintf('Student %s not found.', $student));
-   						$students_not_found[] = $student;
+   						$students_not_found[] = $uvanetid;
                   } else {
                      $student_data = $result_lookup;
 							$new_student = array(
 								'Student' => array(
-									'coll_kaart' => $student,
-									'ldap_uid'   => $student,
+									'coll_kaart' => $uvanetid,
+									'ldap_uid'   => $uvanetid,
 								));
 							$this->Course->User->Student->create();
 							$this->Course->User->Student->save($new_student);
@@ -96,13 +100,14 @@ class CoursesController extends AppController {
 							/* set extra vars for user account */
 							$student_data['User']['password'] = 'password';
 							$student_data['User']['student_id'] = $student_id;
-							$student_data['User']['username'] = $student;
+							$student_data['User']['username'] = $uvanetid;
 							$student_data['User']['activated'] = 1;
 							$student_data['User']['role_id'] = STUDENT;
 							$this->Course->User->create();
 							$this->Course->User->save($student_data);
 						}
 					}
+
 					if ($student_data) {
 						/* add student to this course -- if necessary */
 						if (!$this->Course->StudentsCourse->find('first', array(
@@ -123,10 +128,15 @@ class CoursesController extends AppController {
             if (count($students_not_found) > 0) {
                $this->Session->setFlash(__('One or more UvAnetID\'s not found', true), 'flash/modal', array('class' => 'error'));
             }
-			$this->set('studentsnotfound', $students_not_found);
-			} else {
+			} else { // No password has been given
+            $wrong_password = true;
 				$this->Session->setFlash(__('Please enter your password', true), array('flash/modal'), array('class' => 'error'));
 			}
+
+         if ($wrong_password) {
+            $students_not_found = explode("\n", $this->data['Course']['students']);
+         }
+         $this->set('studentsnotfound', $students_not_found);
 		} else {
 			if (!$course_id) {
 				$this->Session->setFlash(__('Please select a course first!', true), 'flash/modal', array('class' => 'error'));
@@ -199,5 +209,13 @@ class CoursesController extends AppController {
 		$this->Session->setFlash(sprintf(__('%s was not deleted', true), 'Course'));
 		$this->redirect(array('action' => 'index'));
 	}
+
+   function admin_delete_invite($course_id, $student_id) {
+      $this->Course->StudentsCourse->deleteAll(array(
+         'StudentsCourse.student_id' => $student_id,
+         'StudentsCourse.course_id'  => $course_id
+         ));
+      $this->redirect(array('action' => 'admin_invite/' . $course_id));
+   }
 }
 ?>
