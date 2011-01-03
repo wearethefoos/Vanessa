@@ -7,7 +7,7 @@ class CoursesController extends AppController {
 	
 	function index() {
       $student_id = null;
-      if ($this->Session->read('Auth.User.role_id') == 11)
+      if ($this->Session->read('Auth.User.role_id') == STUDENT)
          $student_id = $this->Session->read('Auth.User.student_id');
 		$this->set('courses', $this->User->getUsersCourses($this->Session->read('Auth.User.id'), $student_id));
 	}
@@ -176,6 +176,7 @@ class CoursesController extends AppController {
 	}
 
 	function admin_add() {
+      $this->layout = 'large';
 		if (!empty($this->data)) {
 			$this->data['Course']['user_id'] = $this->Session->read('Auth.User.id');
 			$this->Course->create();
@@ -208,14 +209,14 @@ class CoursesController extends AppController {
 
 	function admin_delete($id = null) {
 		if (!$id) {
-			$this->Session->setFlash(sprintf(__('Invalid id for %s', true), 'course'));
+			$this->Session->setFlash(sprintf(__('Invalid id for %s', true), 'flash/modal'));
 			$this->redirect(array('action'=>'index'));
 		}
 		if ($this->Course->delete($id)) {
-			$this->Session->setFlash(sprintf(__('%s deleted', true), 'Course'));
+			$this->Session->setFlash(sprintf(__('%s deleted', true), 'flash/modal'));
 			$this->redirect(array('action'=>'index'));
 		}
-		$this->Session->setFlash(sprintf(__('%s was not deleted', true), 'Course'));
+		$this->Session->setFlash(sprintf(__('%s was not deleted', true), 'flash/modal'));
 		$this->redirect(array('action' => 'index'));
 	}
 

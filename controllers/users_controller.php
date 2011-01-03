@@ -72,18 +72,22 @@ class UsersController extends AppController {
     }
     
     function dashboard() {
-        $this->set('title_for_layout', __('Dashboard', true));
-        $id = $this->Session->read('Auth.User.id');
-        if (!$id && empty($this->data)) {
-            $this->Session->setFlash(__('Heya! Login first, please ;)', true), 'flash/modal', array('class' => 'error'));
-            $this->redirect(array('action' => 'login'));
-        }
-		$user_id = $this->Session->read('Auth.User.id');
-        $student_id = $this->Session->read('Auth.User.student_id');
-        $this->set('courses', $this->User->getUsersCourses($user_id, $student_id));
-        $this->set('assignments', $this->User->getStudentsPlacements($student_id));
-        $this->set('unpreferenced', $this->User->getStudentsUnpreferenced($student_id));
-        $this->set('unassigned', $this->User->getStudentsUnassigned($student_id));
+      $this->set('title_for_layout', __('Dashboard', true));
+      $id = $this->Session->read('Auth.User.id');
+      if (!$id && empty($this->data)) {
+         $this->Session->setFlash(__('Heya! Login first, please ;)', true), 'flash/modal', array('class' => 'error'));
+         $this->redirect(array('action' => 'login'));
+      }
+      $user_id = $this->Session->read('Auth.User.id');
+      $student_id = null;
+      if ($this->Session->read('Auth.User.role_id') == STUDENT) {
+         $student_id = $this->Session->read('Auth.User.student_id');
+         $this->set('assignments', $this->User->getStudentsPlacements($student_id));
+         $this->set('unpreferenced', $this->User->getStudentsUnpreferenced($student_id));
+         $this->set('unassigned', $this->User->getStudentsUnassigned($student_id));
+      }
+
+      $this->set('courses', $this->User->getUsersCourses($user_id, $student_id));
     }
     
     function admin_login() {

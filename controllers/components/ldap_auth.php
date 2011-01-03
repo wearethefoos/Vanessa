@@ -146,7 +146,7 @@ class LdapAuthComponent extends AuthComponent {
       //    . The user is registered in the database, he is an LDAP user
       //      -> He can go on to the dashboard.
       if (!$state_UserValidated) {
-         $this->Session->setFlash(__('I don\'t know you by either that name or that password!', true), 'flash/modal', array('class' => 'error'));
+         $this->Session->setFlash(__("I don\'t know you by either that name or that password!", true), 'flash/modal', array('class' => 'error'));
          $login_status = 'denied';
          $result = false;
       }

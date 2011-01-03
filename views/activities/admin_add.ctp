@@ -12,7 +12,15 @@
 		echo $this->Form->input('max_participants', array('between' => '<div class="help"><p>' . __('Maximum amount of students for this activity', true) . '</p></div>'));
 	?>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit', true));?>
+   <div style="width:400px;position: relative">
+<?php
+   echo $this->Form->submit(__('Submit', true), array('div' => array('style' => 'width:100px;position:relative;left:0px')));
+   echo $this->Form->submit(__('Cancel', true), array('div' => array('style' => 'width:100px;position:relative;right:0px'),'onclick' => 'alert("HOI");return false;'));
+?>
+   </div>
+<?php
+   echo $this->Form->end();
+?>
 
 	<table>
 		<thead>
@@ -21,9 +29,9 @@
 			</tr>
 		</thead>
 		<tbody>
-		<?php foreach ($activities as $activity) : ?>
+		<?php foreach ($activities as $activity_id => $activity) : ?>
 			<tr>
-				<td><?php echo $activity['name']; ?></td>
+				<td><?php echo $this->Html->link($activity['name'], array('action' => 'edit', $activity_id, 'admin' => true)); ?></td>
 			</tr>
 		<?php endforeach; ?>
 		</tbody>

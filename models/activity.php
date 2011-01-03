@@ -15,7 +15,7 @@ class Activity extends AppModel {
 		'name' => array(
 			'notempty' => array(
 				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
+				'message' => 'This cannnot be empty',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
@@ -25,7 +25,7 @@ class Activity extends AppModel {
 		'room' => array(
 			'notempty' => array(
 				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
+				'message' => 'This cannnot be empty',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
@@ -35,7 +35,7 @@ class Activity extends AppModel {
 		'max_participants' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
+				'message' => 'This must be a numeric value',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
@@ -45,12 +45,16 @@ class Activity extends AppModel {
 		'min_participants' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
+				'message' => 'This must be a numeric value',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
+         'smaller' => array(
+            'rule' => array('MinSmallerThanMax'),
+            'message' => 'Min participants must be smaller than Max participants'
+         )
 		),
 	);
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
@@ -64,7 +68,14 @@ class Activity extends AppModel {
 			'order' => ''
 		)
 	);
-	
+
+   function MinSmallerThanMax($check) {
+      if ($this->data['Activity']['max_participants'] < $this->data['Activity']['min_participants'])
+         return false;
+      else
+         return true;
+   }
+
 	public function getCourseIdFromId($id=null) {
 		if ($id) {
 			if ($activity = $this->findById($id)) {

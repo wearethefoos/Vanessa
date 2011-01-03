@@ -1,6 +1,17 @@
+<?php
+   $args = array('courses' => $courses);
+   if (isset($unpreferenced))
+      $args['unpreferenced'] = $unpreferenced;
+   if (isset($unassigned))
+      $args['unassigned'] = $unassigned;
+   echo $this->element('display_courses', $args);
+?>
+<? if (false) : ?>
 <div class="courses">
 	<div class="header"></div>
-	<?php if ($this->Session->read('Auth.User.role_id') <= TEACHER) : // teachers ?>
+	<?php
+      $role = $this->Session->read('Auth.User.role_id');
+      if ($role <= TEACHER) : // teachers ?>
 		<div class="right">
 			<?php echo $this->Html->link(__('New course', true), array(
 				'controller' => 'courses',
@@ -13,7 +24,7 @@
 	<?php foreach ($courses as $course) : ?>
         <?php
             $class = 'course';
-			$action = 'view';
+            $action = 'view';
             if (isset($unpreferenced[$course['Course']['id']])) {
                 $class = 'course waiting'; // awaiting preferencing by student
 				$action = 'pick';
@@ -23,7 +34,7 @@
         ?>
 	<div class="<?php echo $class; ?>" title="<?php echo $course['Course']['description']; ?>">
 		<?php echo $this->Html->link($course['Course']['name'], array('controller' => 'courses', 'action' => $action, $course['Course']['id'])); ?> 
-		<?php switch ($this->Session->read('Auth.User.role_id')) { 
+		<?php switch ($role) {
 				case STUDENT : // student 
 				echo $this->Html->link(__('Preferences', true), array(
 					'controller' => 'courses',
@@ -49,3 +60,4 @@
 	</div>
 	<?php endforeach; ?>
 </div>
+<?php endif; ?>

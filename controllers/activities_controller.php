@@ -45,6 +45,7 @@ class ActivitiesController extends AppController {
 	}
 
 	function admin_edit($id = null) {
+      $this->layout = 'large';
 		if (!$id && empty($this->data)) {
 			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'activity'));
 			$this->redirect(array('action' => 'index'));
@@ -63,17 +64,17 @@ class ActivitiesController extends AppController {
 		$this->set('courses', $this->Activity->Course->fromUserWithId($this->Session->read('Auth.User.id'), true));
 	}
 
-	function admin_delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(sprintf(__('Invalid id for %s', true), 'activity'));
-			$this->redirect(array('action'=>'index'));
-		}
-		if ($this->Activity->delete($id)) {
-			$this->Session->setFlash(sprintf(__('%s deleted', true), 'Activity'));
-			$this->redirect(array('action'=>'index'));
-		}
-		$this->Session->setFlash(sprintf(__('%s was not deleted', true), 'Activity'));
-		$this->redirect(array('action' => 'index'));
+	function admin_delete($course_id, $activity_id = null) {
+		if (!$activity_id) {
+			$this->Session->setFlash(sprintf(__('Invalid id for %s', true), 'activity'), 'flash/modal', array('class' => 'error'));
+		} else {
+         if ($this->Activity->delete($activity_id)) {
+            $this->Session->setFlash(sprintf(__('%s deleted', true), 'Activity'), 'flash/modal', array('class' => 'success'));
+   		} else {
+            $this->Session->setFlash(sprintf(__('%s was not deleted', true), 'Activity'), 'flash/modal', array('class' => 'error'));
+         }
+      }
+      $this->redirect(array('controller' => 'courses','action'=>'view', $course_id, 'admin' => true));
 	}
 }
 ?>
