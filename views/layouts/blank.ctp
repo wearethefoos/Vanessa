@@ -21,6 +21,8 @@
 	?>
 </head>
 <body>
-<?php echo $content_for_layout; ?>
+	<div id="blank_container">
+   <?php echo $content_for_layout; ?>
+   </div>
 </body>
 </html>

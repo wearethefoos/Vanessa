@@ -31,7 +31,7 @@
  * @subpackage    cake.vanessa
  */
 class AppController extends Controller {
-    var $components = array('Acl', 'LdapAuth', 'RequestHandler', 'Session', 'Security', 'Email', 'DebugKit.Toolbar');
+    var $components = array('Acl', 'LdapAuth', 'RequestHandler', 'Session', 'DebugKit.Toolbar');
     var $helpers = array('Text', 'Html', 'Form', 'Ajax', 'Javascript', 'Session', 'Date');
     var $keywords;
     var $description;

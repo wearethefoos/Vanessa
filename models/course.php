@@ -23,6 +23,17 @@ class Course extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
+      'amount_of_dislikes' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+
 	);
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
@@ -50,8 +61,8 @@ class Course extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
-		'StudentGroup' => array(
-			'className' => 'StudentGroup',
+		'Group' => array(
+			'className' => 'Group',
 			'foreignKey' => 'course_id',
 			'dependent' => false,
 			'conditions' => '',
@@ -62,38 +73,6 @@ class Course extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		),
-		'StudentsCourse' => array(
-			'className' => 'StudentsCourse',
-			'foreignKey' => 'course_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		),
-	);
-
-
-	var $hasAndBelongsToMany = array(
-		'Student' => array(
-			'className' => 'Student',
-			'joinTable' => 'students_courses',
-			'foreignKey' => 'course_id',
-			'associationForeignKey' => 'student_id',
-			'unique' => true,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'finderQuery' => '',
-			'deleteQuery' => '',
-			'insertQuery' => ''
 		)
 	);
 	
@@ -127,13 +106,13 @@ class Course extends AppModel {
 	 */
 	public function getStudentsGroupIdForThisCourse($id) {
 		if ($student_id = $this->getStudentIdFromSession()) {
-			if ($group = $this->StudentGroup->JoinStudentGroup->find('first', array(
+			if ($group = $this->Group->find('first', array(
 				'conditions' => array(
-					'JoinStudentGroup.student_id' => $student_id,
-					'StudentGroup.course_id' => $id,
+					'Student.id' => $student_id,
+					'Group.course_id' => $id,
 					)
 				))) {
-					return $group['StudentGroup']['id'];
+					return $group['Group']['id'];
 				}
 		} else {
 			return false;
@@ -147,24 +126,82 @@ class Course extends AppModel {
             'Course.id' => $course_id
             ),
          'contain' => array(
-            'Student.User',
+            'Group.Student.User',
             'Supervisor'
             )
          ));
    }
 
    function findStudents($course_id) {
-      $students = $this->find('first', array(
+      $groups = $this->find('all', array(
          'conditions' => array(
-            'id' => $course_id
+            'Course.id' => $course_id
             ),
-         'contain' => array(
-            'Student.User',
-            )
+//         'contain' => array(
+//            'Group.Student.User',
+//            ),
+         'recursive' => 0,
+         'joins' => array(
+               array(
+                  'table' => 'groups',
+                  'alias' => 'Group',
+                  'type' => 'INNER',
+                  'conditions' => array('Group.course_id = Course.id')
+               ),
+               array(
+                  'table' => 'join_student_groups',
+                  'alias' => 'JoinStudentGroup',
+                  'type' => 'INNER',
+                  'conditions' => array('JoinStudentGroup.group_id = Group.id')
+               ),
+               array(
+                  'table' => 'students',
+                  'alias' => 'Student',
+                  'type' => 'INNER',
+                  'conditions' => array('Student.id = JoinStudentGroup.student_id')
+               ),
+               array(
+                  'table' => 'users',
+                  'alias' => 'User',
+                  'type' => 'INNER',
+                  'conditions' => array('Student.id = User.student_id')
+               ),
+         ),
+         'fields' => array(
+            'Group.*',
+            'Student.*',
+            'User.*'
+         )
          ));
-      $students = (isset($students['Student']) && count($students['Student'])) ? $students['Student'] : array();
 
+      $students = array();
+      foreach ($groups as $group) {
+         $group['Student']['User'] = $group['User'];
+         $students[] = $group['Student'];
+      }
       return $students;
+   }
+
+   function getStudentList($course_id) {
+      $result = array();
+      $students = $this->findStudents($course_id);
+      foreach($students as $student) {
+         $result[$student['id']] = array('number' => $student['coll_kaart'], 'name' => $student['User']['name']);
+      }
+
+      return $result;
+   }
+
+   function isStudentInCourse($course_id, $student_id) {
+      $students = $this->findStudents($course_id);
+      $found = false;
+      foreach($students as $student) {
+         if ($student['id'] == $student_id) {
+            $found = true;
+            break;
+         }
+      }
+      return $found;
    }
 
 }

@@ -6,9 +6,17 @@
 		echo $this->Form->input('id');
 		echo $this->Form->input('name');
 		echo $this->Form->input('description');
+		echo $this->Form->input('deadline', array('dateFormat' => 'DMY', 'minYear' => date('Y'),'maxYear' => date('Y') + 5));
+		echo $this->Form->input('amount_of_preferences');
 	?>
 	</fieldset>
-	<?php echo $this->Form->end(__('Submit', true));?>
-	<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('Course.id')), null, sprintf(__('Are you sure you want to delete %s?', true), $this->Form->value('Course.name'))); ?>
-	<?php echo $this->Html->link(__('Cancel', true), array('action' => 'index'));?>
+   <div style="width:100%;height:50px;position: relative">
+<?php
+   echo $this->Form->submit(__('Submit', true), array('div' => array('style' => 'position:absolute;left:0px')));
+   echo $this->Form->submit(__('Cancel', true), array('div' => array('style' => 'position:absolute;right:0px'),'onclick' => 'window.location="' . $html->url(array('action' => 'index', 'admin' => false)) . '";return false;'));
+?>
+   </div>
+<?php
+   echo $this->Form->end();
+?>
 </div>

@@ -18,8 +18,8 @@ class ActivitiesController extends AppController {
 
 	function admin_view($id = null) {
 		if (!$id) {
-			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'activity'));
-			$this->redirect(array('action' => 'index'));
+			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'activity'), 'flash/modal', array('class' => 'error'));
+			$this->redirect(array('action' => 'index', 'admin' => true));
 		}
 		$this->set('activity', $this->Activity->read(null, $id));
 	}
@@ -47,15 +47,15 @@ class ActivitiesController extends AppController {
 	function admin_edit($id = null) {
       $this->layout = 'large';
 		if (!$id && empty($this->data)) {
-			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'activity'));
-			$this->redirect(array('action' => 'index'));
+			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'activity'), 'flash/modal', array('class' => 'error'));
+			$this->redirect(array('action' => 'index', 'admin' => true));
 		}
 		if (!empty($this->data)) {
 			if ($this->Activity->save($this->data)) {
-				$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'activity'));
-				$this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'activity'), 'flash/modal', array('class' => 'success'));
+				$this->redirect(array('controller' => 'courses','action' => 'view', $this->data['Activity']['course_id'], 'admin' => true));
 			} else {
-				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'activity'));
+				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'activity'), 'flash/modal', array('class' => 'error'));
 			}
 		}
 		if (empty($this->data)) {

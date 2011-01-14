@@ -26,20 +26,14 @@ class Student extends AppModel {
 	);
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
+   var $hasAndBelongsToMany = array(
+        'Group' => array(
+                 'className'  => 'Group',
+                 'joinTable'  => 'join_student_groups'
+        )
+   );
+
 	var $hasMany = array(
-		'JoinStudentGroup' => array(
-			'className' => 'JoinStudentGroup',
-			'foreignKey' => 'student_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		),
 		'Solution',
 		);
 
@@ -58,39 +52,6 @@ class Student extends AppModel {
 			'counterQuery' => ''
 		)
 	);
-
-
-	var $hasAndBelongsToMany = array(
-		'Course' => array(
-			'className' => 'Course',
-			'joinTable' => 'students_courses',
-			'foreignKey' => 'student_id',
-			'associationForeignKey' => 'course_id',
-			'unique' => true,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'finderQuery' => '',
-			'deleteQuery' => '',
-			'insertQuery' => ''
-		)
-	);
-
-   public function getStudentListFromCourse($course_id) {
-      return $this->findList(array(
-         'conditions' => array('StudentsCourse.course_id' => $course_id),
-         'joins' => array(array(
-                           'table' => 'students_courses',
-                           'alias' => 'StudentsCourse',
-                           'type' => 'INNER',
-                           'conditions' => array('StudentsCourse.student_id = Student.id')
-                     )),
-         'fields' => array('Student.id', 'Student.coll_kaart'),
-         'recursive' => -1
-      ));
-   }
 
 }
 ?>

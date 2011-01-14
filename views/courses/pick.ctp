@@ -35,6 +35,7 @@
 	<script type="text/javascript">
 		var tree = new CD3.Dnd.Draggable('tree');
 		var basket = new CD3.Dnd.Sortable('basket');
+//		var tree = new CD3.Dnd.Draggable('tree');
 
 		var savePrefs = function() {
 			var assignments = new Array();

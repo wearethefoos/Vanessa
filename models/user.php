@@ -92,7 +92,13 @@ class User extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		)
+		),
+		'Course' => array(
+			'className' => 'Course',
+			'foreignKey' => 'user_id',
+			'dependent' => false,
+         )
+
 	);
 
 /**
@@ -131,9 +137,9 @@ class User extends AppModel {
 				);
 		}
 		if ($list)
-			return $this->Student->Course->find('list', $conditions);
+			return $this->Course->find('list', $conditions);
 			
-        return $this->Student->Course->find('all', $conditions);
+        return $this->Course->find('all', $conditions);
 	}
 
 /**

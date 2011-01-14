@@ -1,5 +1,15 @@
 <div class="courses">
-	<h2><?php echo $course['Course']['name']; ?></h2>
+	<h2><?php
+      echo $this->Html->link($course['Course']['name'],
+                             array(
+                                    'controller' => 'courses',
+                                    'action' => 'edit',
+                                    $course['Course']['id'],
+                                    'admin' => true
+                     				)
+                           );
+
+   ?></h2>
 	<div class="right">
 		<?php switch ($this->Session->read('Auth.User.role_id')) {
 				case STUDENT : // student
@@ -14,14 +24,30 @@
 				case ADMINISTRATOR :
 				case SUPERVISOR :
 				case TEACHER : // teacher
-				echo $this->Html->link(__('Invitations', true), array(
-					'controller' => 'courses',
-					'action' => 'invite',
-					$course['Course']['id'],
-					'admin' => true,
-					),
-					array('class' => 'pink')
-					);
+				echo $this->Html->link(__('Invitations', true),
+                                 array(
+                                       'controller' => 'courses',
+                                       'action' => 'invite',
+                                       $course['Course']['id'],
+                                       'admin' => true,
+                                       ),
+                                 array(
+                                       'class' => 'pink'
+                                      )
+                                 );
+            echo $this->Html->link(__('Roster', true),
+                                 array(
+                                       'controller' => 'courses',
+                                       'action' => 'roster',
+                                       $course['Course']['id'],
+                                       'admin' => true,
+                                       ),
+                                 array(
+                                       'style' => 'margin-left:10px',
+                                       'class' => 'purple',
+                                      )
+                                 );
+
 				break;
 	    } ?>
 	</div>
@@ -58,7 +84,7 @@
 		<th><?php __('Name'); ?></th>
 		<th><?php __('Teacher'); ?></th>
 		<?php if ($this->Session->read('Auth.User.role_id') <= TEACHER) : ?>
-		<th class="actions"><?php __('Actions');?></th>
+		<th class="actions" style="text-align: center"><?php __('Actions');?></th>
 		<?php endif; ?>
 	</tr>
 	<?php

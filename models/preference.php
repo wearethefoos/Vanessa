@@ -36,9 +36,9 @@ class Preference extends AppModel {
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
-		'StudentGroup' => array(
-			'className' => 'StudentGroup',
-			'foreignKey' => 'student_group_id',
+		'Group' => array(
+			'className' => 'Group',
+			'foreignKey' => 'group_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
@@ -115,7 +115,7 @@ class Preference extends AppModel {
 		debug($preference);
 		$course_id = $this->getCourseFromActivityId(trim($preference, '[\']'));
 		debug($course_id);
-		$student_group_id = $this->StudentGroup->Course->getStudentsGroupIdForThisCourse($course_id);
+		$student_group_id = $this->Group->Course->getStudentsGroupIdForThisCourse($course_id);
 		return array(
 			'student_group_id' => $student_group_id,
 			'activity_id' => trim($preference, '[\']'),
@@ -143,13 +143,13 @@ class Preference extends AppModel {
 	 */
 	public function getStudentsGroupIdForThisCourse($course_id) {
 		if ($student_id = $this->getStudentIdFromSession()) {
-			if ($group = $this->StudentGroup->JoinStudentGroup->find('first', array(
+			if ($group = $this->Group->find('first', array(
 				'conditions' => array(
-					'JoinStudentGroup.student_id' => $student_id,
-					'StudentGroup.course_id' => $course_id,
+					'Student.student_id' => $student_id,
+					'Group.course_id' => $course_id,
 					)
 				))) {
-					return $group['StudentGroup']['id'];
+					return $group['Group']['id'];
 				}
 		} else {
 			return false;

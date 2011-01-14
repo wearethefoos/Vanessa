@@ -28,15 +28,28 @@
          } elseif (isset($unassigned[$course['Course']['id']])) {
             $class .= ' pending'; // awaiting assignment by teacher
 			} elseif ($role <= TEACHER) { // add an extra link for teachers to invite students
-				$extra_action = $this->Html->link(__('Invitations', true), array(
-					'controller' => 'courses',
-					'action' => 'invite',
-					$course['Course']['id'],
-					'admin' => true,
-					),
-					array(
-					'class' => 'pink',
-					));
+				$extra_action = $this->Html->link(__('Invitations', true),
+                                             array(
+                                                   'controller' => 'courses',
+                                                   'action' => 'invite',
+                                                   $course['Course']['id'],
+                                                   'admin' => true,
+                                                   ),
+                                             array(
+                                                   'style' => 'margin-left:10px',
+                                                   'class' => 'pink',
+                                             ));
+            $extra_action .= $this->Html->link(__('Roster', true),
+                                             array(
+                                                   'controller' => 'courses',
+                                                   'action' => 'roster',
+                                                   $course['Course']['id'],
+                                                   'admin' => true,
+                                                   ),
+                                             array(
+                                                   'style' => 'margin-left:10px',
+                                                   'class' => 'purple',
+                                             ));
 			}
         ?>
 	<div class="<?php echo $class; ?>" title="<?php echo $course['Course']['description']; ?>">

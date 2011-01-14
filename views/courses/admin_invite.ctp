@@ -3,16 +3,16 @@
 <script>
    var sort_order = 'asc';
    var sort_uvanetid_fn = function(a,b) {
-      var compA = ($(a).childElements())[0].firstChild.nodeValue;
-      var compB = ($(b).childElements())[0].firstChild.nodeValue;
+      var compA = ($(a).childElements())[1].firstChild.nodeValue;
+      var compB = ($(b).childElements())[1].firstChild.nodeValue;
       if (sort_order == 'desc')
          return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
       else
          return (compA > compB) ? -1 : (compA < compB) ? 1 : 0;
    };
    var sort_name_fn = function(a,b) {
-      var compA = ($(a).childElements())[1].firstChild.nodeValue;
-      var compB = ($(b).childElements())[1].firstChild.nodeValue;
+      var compA = ($(a).childElements())[2].firstChild.nodeValue;
+      var compB = ($(b).childElements())[2].firstChild.nodeValue;
       if (sort_order == 'desc')
          return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
       else
@@ -63,6 +63,27 @@
       });
    }
 
+   function send_emails_to_selected_students() {
+      var emails = [];
+      $$('input.selected').each(function (item){if (item.checked) {emails.push(item.readAttribute('email'))}});
+      window.location = "mailto:" + emails.join(';');
+   }
+   
+   function select_all(checked) {
+      $$('input.selected').each(function(item){item.checked = checked});
+   }
+
+   function delete_selected_students() {
+      <?php
+         echo 'url = "' . $this->Html->url(array('action' => 'delete_invite', 'admin' => true)) . '/' . $this->data['Course']['id'] . '/";';
+      ?>
+      var student_ids = [];
+      $$('input.selected').each(function (item){if (item.checked) {student_ids.push(item.readAttribute('student_id'))}});
+      window.location = url + student_ids.join('_');
+   }
+
+
+
 
 </script>
 <div class="courses">
@@ -87,30 +108,64 @@
 			'required' => true, 
 			'between' => '<div class="help"><p>' . __('I need your UvAnetID password to look up the students you add in the UvA directory service.', true) . '</p></div>'
 			));
-		echo $this->Form->end(__('Invite!', true));
-      echo $this->Form->button(__('Send invitations email to students', true), array(
-                        'type' => 'button',
-                        'onclick' => 'send_invitation_emails(' . $this->data['Course']['id'] . ')'
-      ));
+ ?>
+   <div style="width:100%;height:50px;position: relative">
+<?php
+   echo $this->Form->submit(__('Invite!', true), array('div' => array('style' => 'position:absolute;left:0px')));
+   echo $this->Form->submit(__('Cancel', true), array('div' => array('style' => 'position:absolute;right:0px'),'onclick' => 'window.location="' . $html->url(array('action' => 'index', 'admin' => false)) . '";return false;'));
+?>
+   </div>
+<?php
+   echo $this->Form->end();
 	?>
 	<div class="students">
 		<h3><?php __('Assigned Students'); ?></h3>
 		<?php if (!count($students)) : ?>
 			<p><?php __('No assigned students yet...'); ?></p>
-		<?php else : ?>
+		<?php else :
+         echo $this->Form->button(__('Send emails to selected students', true), array(
+                           'type' => 'button',
+                           'onclick' => 'send_emails_to_selected_students()'
+         ));
+      ?>
 		<table>
 			<tbody id="student_table">
             <tr id="student_header">
-               <th><a href="#" onclick="sort_students(sort_uvanetid_fn, 'sort_order_uvanetid')">UvanetID</a></th>
-               <th><a href="#" onclick="sort_students(sort_name_fn, 'sort_order_name')">Name</a></th>
+               <th><?php echo $this->Form->checkbox('all', array('title' => 'select/unselect all', 'onclick' => 'select_all(this.checked)'));?></th>
+               <th><a title="sort per UvanetID" href="#" onclick="sort_students(sort_uvanetid_fn, 'sort_order_uvanetid')">UvanetID</a></th>
+               <th><a title="sort per name" href="#" onclick="sort_students(sort_name_fn, 'sort_order_name')">Name</a></th>
+               <th><?php echo $this->Html->link(
+                                    $this->Html->image(
+                                                   'delete.png',
+                                                   array('title' => __('delete selected students', true),
+                                                         'onclick' => 'return confirm("' . __('Are you sure you want to delete the selected students?', true) . '")')
+                                                ),
+                                    "#",
+                                    array('onclick' => 'delete_selected_students();return false',
+                                          'escape' => false)
+                              );
+                  ?></th>
                <input type="hidden" id="sort_order_name" value="asc"/>
                <input type="hidden" id="sort_order_uvanetid" value="asc"/>
 
 			<?php foreach($students as $student) : ?>
 				<tr>
+               <td><?php echo $this->Form->checkbox('selected', array('class' => 'selected', 'student_id' => $student['id'], 'email' => $student['User']['email'])); ?></td>
 					<td><?php echo $student['coll_kaart']; ?></td>
 					<td><?php echo $student['User']['name']; ?></td>
-               <td><?php echo $this->Html->link($this->Html->image('delete.png'), array('action' => 'delete_invite', $this->data['Course']['id'], $student['id']), array('escape' => false)); ?></td>
+               <td><?php echo $this->Html->link(
+                                    $this->Html->image(
+                                                   'delete.png',
+                                                   array('title' => __('delete this student', true),
+                                                         'onclick' => 'return confirm("' . __('Are you sure you want to delete this student?', true) . '")')
+                                                 ),
+                                    array('action' => 'delete_invite',
+                                          $this->data['Course']['id'],
+                                          $student['id'],
+                                          'admin' => true),
+                                    array('escape' => false)
+                              );
+               ?></td>
 				</tr>
 			<?php endforeach; ?>
 			<tbody>

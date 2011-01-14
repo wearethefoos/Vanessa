@@ -56,6 +56,11 @@ class Activity extends AppModel {
             'message' => 'Min participants must be smaller than Max participants'
          )
 		),
+      'title' => array(
+			'notempty' => array(
+				'rule' => array('notempty'),
+				'message' => 'This cannnot be empty')
+      )
 	);
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
@@ -91,11 +96,12 @@ class Activity extends AppModel {
          array(
             'conditions' => array('course_id' => $course_id),
             'recursive' => -1,
-            'fields' => array('id', 'name', 'min_participants', 'max_participants')));
+            'fields' => array('id', 'name', 'title', 'min_participants', 'max_participants')));
       $result = array();
       foreach($rows as &$row) {
          $result[$row['Activity']['id']] = array(
-            'name' => $row['Activity']['name'],
+            'name' => trim($row['Activity']['name']),
+            'title' => $row['Activity']['title'],
             'min_participants' => $row['Activity']['min_participants'],
             'max_participants' => $row['Activity']['max_participants'],
             );
