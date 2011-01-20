@@ -47,7 +47,7 @@ class Group extends AppModel {
                  'joinTable'  => 'join_student_groups'
         )
    );
-   
+
    public function getStudentGroupListFromCourse($course_id) {
       $rows = $this->find('all', array(
          'conditions' => array('Group.course_id' => $course_id),

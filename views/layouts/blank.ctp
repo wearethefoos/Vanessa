@@ -10,11 +10,11 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->meta('description', $description);
 		echo $this->Html->meta('keywords', $keywords);
-		echo $this->Html->meta('author', 'W.R. de Vos');
 
 		echo $this->Html->css('cake.generic');
 		echo $this->Html->css('vanessa');
 		echo $this->Html->script('prototype.s2.min');
+//		echo $this->Html->script('prototype');
 		echo $this->Html->script('s2.ui');
 
 		echo $scripts_for_layout;

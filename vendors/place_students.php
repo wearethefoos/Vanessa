@@ -1,8 +1,9 @@
 <?php
-define('DEFAULT_UNWANTED_SCORE', 100);
+define('DEFAULT_UNWANTED_SCORE', 10);
+define('DEFAULT_UNWANTED_SCORE_INDIVIDU', 100);
 define('DEFAULT_MIN_CONSTRAINT_SCORE', 400);
 define('DEFAULT_MAX_CONSTRAINT_SCORE', 500);
-define('DEFAULT_TRIALS_BLOCK', 30);
+define('DEFAULT_TRIALS_BLOCK', 200);
 define('DEFAULT_MIN_CONSTRAINT', true);
 define('DEFAULT_MAX_TRIALS', 1500);
 define('DEFAULT_MAX_GENERATIONS', 30);
@@ -43,84 +44,6 @@ class PlaceStudents {
          $result[$key] = &$assoc_array[$key];
       }
       return $result;
-   }
-
-   public function display_placements(&$placements, $score, $trial, $generation) {
-      $unwanted_score = $this->options['unwanted_score'];
-
-      echo '<div style="float:left;margin-right:10px">';
-
-      echo '<table border="1" style="border:solid">
-               <tr>
-                  <th>Activity</th>
-                  <th colspan="2">Score: ' . $score . '</th>
-                  <th colspan="2">Trial: ' . $trial . '</th>
-                  <th colspan="2">Generation: ' . $generation . '</th>
-               </tr>';
-      $nb_students = 0;
-      foreach($placements as $activity_key => &$placement) {
-         echo '<tr>
-                  <td class="activity" id="A' . $activity_key . '">
-                     <div class="information">
-                        <p>Title:</p>
-                        <p>' . $this->activities[$activity_key]['title'] . '</p>
-                        <p>Min students: <span class="min-students">' . $this->activities[$activity_key]['min_participants'] . '</span></p>
-                        <p>Max students: <span class="max-students">' . $this->activities[$activity_key]['max_participants'] . '</span></p>
-                     </div>' . $this->activities[$activity_key]['name'] . '
-                  </td>';
-         $nb_students_in_activity = 0;
-         foreach ($placement['groups'] as $student_group_key => $preference){
-            $class = "placement";
-            if (count($this->student_groups[$student_group_key]['group']) == 1) {
-               $student = $this->students[$this->student_groups[$student_group_key]['group'][0]];
-               $nb_students++;
-               $nb_students_in_activity++;
-               $class .= ' student';
-               echo '<td id="G' . $student_group_key . '" class="' . $class . '">
-                        <div class="information">
-                           <p>' . $student['name'] . '</p>
-                           <ol>';
-               foreach($this->student_groups[$student_group_key]['preferences'] as $preference) {
-                  echo '<li>' . $this->activities[$preference]['name'] . '</li>';
-               }
-               echo       '</ol>
-                        </div>
-                        <input type="hidden" name="data[' . $activity_key . '][]" value="' . $student_group_key . '"></input>
-                        ' . $student['number'] . '
-                    </td>';
-            } else {
-               $class .= ' group';
-               echo '<td id="G' . $student_group_key . '" class="' . $class . '" colspan="' . count($this->student_groups[$student_group_key]['group']) . '">';
-               echo '<table style="width:100%;background-color:transparent;margin:0px"><tr style="background-color:transparent;">';
-               foreach($this->student_groups[$student_group_key]['group'] as $student_key) {
-                  $student = $this->students[$student_key];
-                  $nb_students++;
-                  $nb_students_in_activity++;
-                  $style = 'background-color:transparent;border-bottom:0';
-                  $class = 'student';
-                  echo '<td class="' . $class . '" style="' . $style . '">
-                           <div class="information">
-                              <p>' . $student['name'] . '</p>
-                              <ol>';
-                  foreach($this->student_groups[$student_group_key]['preferences'] as $preference) {
-                     echo '<li>' . $this->activities[$preference]['name'] . '</li>';
-                  }
-                  echo       '</ol>
-                           </div>' . $student['number'] . '</td>';
-               }
-               echo '</tr></table>';
-               echo '<input type="hidden" name="data[' . $activity_key . '][]" value="' . $student_group_key . '"></input>';
-
-               echo '</td>';
-            }
-         }
-         for ($j = $placement['nb_students']; $j < $this->activities[$activity_key]['max_participants']; $j++) {
-            echo '<td class="placement no-student"></td>';
-         }
-         echo '</tr>';
-      }
-      echo '</table></div>';
-
    }
 
    public function display_scores($scores) {
@@ -207,7 +130,7 @@ class PlaceStudents {
          $min = rand($activity_min_min, $activity_min_max);
          $max = $min + rand(0, $activity_max);
 
-         $this->activities[] = array('name' => 'A' . ($activity_key + 1), 'description' => 'This is activity A' . ($activity_key + 1), 'min_participants' => $min, 'max_participants' => $max);
+         $this->activities[] = array('name' => 'A' . ($activity_key + 1), 'title' => 'This is activity A' . ($activity_key + 1), 'min_participants' => $min, 'max_participants' => $max);
       }
 
       for ($student_key = 0; $student_key < $NB_students; $student_key++) {
@@ -307,6 +230,7 @@ class PlaceStudents {
    private function get_one_solution(&$placements, $min_constraint, $student_group_keys = null, $init_score = 0) {
       $coefficient_score = $this->options['coefficient_score'];
       $unwanted_score = $this->options['unwanted_score'] * $coefficient_score;
+      $unwanted_score_individu = $this->options['unwanted_score_individu'] * $coefficient_score;
       $min_constraint_score = $this->options['min_constraint_score'];
       $max_constraint_score = $this->options['max_constraint_score'];
 
@@ -337,7 +261,7 @@ class PlaceStudents {
                $nb_of_students_in_this_activity = $placements[$activity_key]['nb_students'];
                if ($nb_of_students_in_this_activity + $nb_of_students_in_this_group <= $this->activities[$activity_key]['max_participants']) {
                   $place_found = true;
-                  $group_score = $unwanted_score;
+                  $group_score = $nb_of_students_in_this_group == 1 ? $unwanted_score_individu : $unwanted_score;
                   break;
                }
             }
@@ -386,7 +310,7 @@ class PlaceStudents {
                }
                $place_found = true;
                $preferences = array_flip($this->student_groups[$student_group_key]['preferences']);
-               $group_score = isset($preferences[$activity_key]) ? $preferences[$activity_key] : $unwanted_score;
+               $group_score = isset($preferences[$activity_key]) ? $preferences[$activity_key] : (count($this->student_groups[$group_key]['group']) == 1 ? $unwanted_score_individu : $unwanted_score);
             }
          }
 
@@ -425,7 +349,7 @@ class PlaceStudents {
                foreach($placement_more['groups'] as $student_group_key => $old_preference) {
                   $nb_of_students_in_this_group = count($this->student_groups[$student_group_key]['group']);
                   if ($nb_of_students_in_this_group <= $nb_of_students_retrievable_for_current_activity) {
-                     $new_preference = $unwanted_score;                                     // Get the preference of the student for the activity_min
+                     $new_preference = count($this->student_groups[$student_group_key]['group']) == 1 ? $unwanted_score_individu : $unwanted_score;                                     // Get the preference of the student for the activity_min
                      foreach ($this->student_groups[$student_group_key]['preferences'] as $preference => $activity_key) {
                         if ($activity_key == $activity_min_key) {
                            $new_preference = $preference;

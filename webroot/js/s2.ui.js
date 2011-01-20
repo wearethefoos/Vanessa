@@ -13,36 +13,7 @@ document.observe('dom:loaded', function() {
 		
 		helpable.observe('click', showHelp);
 	});
-
-   $$('form .information').each(function(information){
-      information.hide();
-
-      var parent_info = information.up();
-		parent_info.addClassName('withInfo');
-
-      if (parent_info.hasClassName('student')) {
-         information = information.clone(true);
-      }
-		information.writeAttribute('id', 'information' + parent_info.readAttribute('id'));
-		$('blank_container').insert({
-			before: information
-		});
-
-		parent_info.observe('mouseover', showInformation);
-
-   });
 });
-
-function showInformation(event) {
-	setToMousePosition($('information' + this.readAttribute('id')), event);
-	$('information' + this.readAttribute('id')).appear();
-	this.observe('mouseout', hideInformation);
-}
-
-function hideInformation(event) {
-	$('information' + this.readAttribute('id')).fade();
-	this.observe('mouseover', showInformation);
-}
 
 
 function showHelp(event) {

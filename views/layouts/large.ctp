@@ -29,7 +29,6 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->meta('description', $description);
 		echo $this->Html->meta('keywords', $keywords);
-		echo $this->Html->meta('author', 'W.R. de Vos');
 
 		echo $this->Html->css('cake.generic');
 		echo $this->Html->css('vanessa');
@@ -79,7 +78,7 @@
 				<?php $link = $this->Html->url('/dashboard'); $class = ($this->here == $link) ? ' active' : ''; ?>
 				<li class="blue<?php echo $class;?>"><?php echo $this->Html->link(__('Dashboard', true), '/dashboard'); ?></li>
 				<?php $link = $this->Html->url('/assignments'); $class = (in_array($current_section, $section['Assignments'])) ? ' active' : ''; ?>
-				<li class="purple<?php echo $class;?>"><?php echo $this->Html->link(__('Assignments', true), '/assignments'); ?></li>
+				<li class="purple<?php echo $class;?>"><?php echo $this->Html->link(__('Assignments', true), '/solutions'); ?></li>
 				<?php $link = $this->Html->url('/courses'); $class = (in_array($current_section, $section['Courses'])) ? ' active' : ''; ?>
 				<li class="pink<?php echo $class;?>"><?php echo $this->Html->link(__('Courses', true), '/courses'); ?></li>
 		    </ul>

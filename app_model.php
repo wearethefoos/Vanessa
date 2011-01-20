@@ -52,5 +52,15 @@ class AppModel extends Model {
 			return false;
 		}
 	}
+   
+   public function get_field_errors() {
+      $result = '';
+      foreach ($this->invalidFields() as $key => $value) {
+         $result .= 'Field ' . $key . ': ' . $value . '\n';
+      }
+      return $result;
+   }
+
+
 }
 ?>

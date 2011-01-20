@@ -161,6 +161,7 @@ class CoursesController extends AppController {
       $students = $this->Course->findStudents($course_id);
 
       $this->set(compact('students'));
+      $this->set('email', $this->Session->read('Auth.User.email'));
 
 	}
 
@@ -208,15 +209,15 @@ class CoursesController extends AppController {
 
 	function admin_delete($id = null) {
 		if (!$id) {
-			$this->Session->setFlash(sprintf(__('Invalid id for %s', true)), 'flash/modal', array('class' => 'error'));
-			$this->redirect(array('action'=>'index', 'admin' => true));
-		}
-		if ($this->Course->delete($id)) {
-			$this->Session->setFlash(sprintf(__('%s deleted', true)), 'flash/modal', array('class' => 'success'));
-			$this->redirect(array('action'=>'index', 'admin' => true));
-		}
-		$this->Session->setFlash(sprintf(__('%s was not deleted', true)), 'flash/modal', array('class' => 'error'));
-		$this->redirect(array('action' => 'index', 'admin' => true));
+			$this->Session->setFlash(sprintf(__('Invalid id for course', true)), 'flash/modal', array('class' => 'error'));
+		} else {
+         if ($this->Course->delete($id)) {
+            $this->Session->setFlash(sprintf(__('Course deleted', true)), 'flash/modal', array('class' => 'success'));
+         } else {
+            $this->Session->setFlash(sprintf(__('Course was not deleted', true)), 'flash/modal', array('class' => 'error'));
+         }
+      }
+		$this->redirect(array('action' => 'index', 'admin' => false));
 	}
 
    function admin_delete_invite($course_id, $student_id) {
@@ -225,8 +226,7 @@ class CoursesController extends AppController {
 			$this->redirect(array('action' => 'index', 'admin' => true));
 		}
       $student_ids = explode('_', $student_id);
-      $conditions = array('StudentsCourse.course_id'  => $course_id, 'StudentsCourse.student_id' => $student_ids);
-      $this->Course->StudentsCourse->deleteAll($conditions);
+      $this->Course->deleteStudents($course_id, $student_ids);
       $this->redirect(array('action' => 'invite', $course_id, 'admin' => true));
    }
 
@@ -255,51 +255,8 @@ class CoursesController extends AppController {
       $this->set('json', $result);
    }
 
-   function admin_roster($course_id = null) {
-		$this->layout = 'blank';
-      require '..\vendors\place_students.php';
-      if ($course_id == null) {
-         $placements = new PlaceStudents(null, array(
-                                                'nb_activities' => 50,
-                                                'nb_students' => 550,
-                                                'nb_groups' => 100,
-                                                'nb_preferences'=> 7
-                           ));
-      } else {
-         App::import('Model', 'Activity');
-         App::import('Model', 'Course');
-         App::import('Model', 'Group');
-
-         $activity_model = new Activity();
-         $course_model = new Course();
-         $group_model = new Group();
-
-         $data = array();
-
-         $data['activities'] = $activity_model->getActivityListFromCourse($course_id);
-         $data['students'] = $course_model->getStudentList($course_id);
-         $data['student_groups'] = $group_model->getStudentGroupListFromCourse($course_id);
-
-         $placements = new PlaceStudents($data);
-      }
-      $result = $placements->find_best_fit();
-      
-      $groups = array();
-      foreach($placements->student_groups as $group_id => $group) {
-         $new_group = array();
-         foreach($group['group'] as $student_id) {
-            $new_group[] = $placements->students[$student_id]['number'];
-         }
-         sort($new_group);
-         $groups[$group_id] = implode('-', $new_group);
-      }
-      $activities = array();
-      foreach($placements->activities as $activity_id => $activity) {
-         $activities[$activity_id] = $activity['name'];
-      }
-      asort($groups);
-
-      $this->set(compact('result', 'placements', 'groups', 'activities'));
+   function testaction() {
+      $this->layout = 'large';
    }
 
 }

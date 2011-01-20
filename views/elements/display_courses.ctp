@@ -41,8 +41,8 @@
                                              ));
             $extra_action .= $this->Html->link(__('Roster', true),
                                              array(
-                                                   'controller' => 'courses',
-                                                   'action' => 'roster',
+                                                   'controller' => 'solutions',
+                                                   'action' => 'add',
                                                    $course['Course']['id'],
                                                    'admin' => true,
                                                    ),

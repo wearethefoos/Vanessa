@@ -73,14 +73,15 @@ class AppController extends Controller {
         $this->set('keywords', $this->keywords);
         $this->set('description', $this->description);
     }
+
 /**
  * Minifies HTML output.
  * 
  * @return void
  */
-    function afterFilter() {
-        if (Configure::read('debug') == 0)
-            $this->output = str_replace(array("\r", "\r\n", "\n", "\t", "  ", "//<![CDATA[", "//]]>"), "", $this->output);
-    }
+//    function afterFilter() {
+//        if (Configure::read('debug') == 0)
+//            $this->output = str_replace(array("\r", "\r\n", "\n", "\t", "  ", "//<![CDATA[", "//]]>"), "", $this->output);
+//    }
 }
 ?>

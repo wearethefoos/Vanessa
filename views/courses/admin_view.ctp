@@ -84,7 +84,7 @@
 		<th><?php __('Name'); ?></th>
 		<th><?php __('Teacher'); ?></th>
 		<?php if ($this->Session->read('Auth.User.role_id') <= TEACHER) : ?>
-		<th class="actions" style="text-align: center"><?php __('Actions');?></th>
+		<th class="actions" style="text-align: center"><?php __('Delete');?></th>
 		<?php endif; ?>
 	</tr>
 	<?php
@@ -96,12 +96,23 @@
 			}
 		?>
 		<tr<?php echo $class;?>>
-			<td><?php echo $activity['name'];?></td>
+         <td><?php echo $this->Html->link($activity['name'], array('controller' => 'activities', 'action' => 'edit', $activity['id'], 'admin' => true)); ?></td>
 			<td><?php echo $activity['teacher'];?></td>
 			<?php if ($this->Session->read('Auth.User.role_id') <= TEACHER) : // roles teachers and up ?>
-			<td class="actions">
-				<?php echo $this->Html->link(__('Edit', true), array('controller' => 'activities', 'action' => 'edit', $activity['id'], 'admin' => true)); ?>
-				<?php echo $this->Html->link(__('Delete', true), array('controller' => 'activities', 'action' => 'delete', $course['Course']['id'], $activity['id'], 'admin' => true), null, sprintf(__('Are you sure you want to delete %s?', true), $activity['name'])); ?>
+			<td><?php echo $this->Html->link(
+                                    $this->Html->image(
+                                                   'delete.png',
+                                                   array('title' => __('delete this activity', true),
+                                                         'onclick' => 'return confirm("' . sprintf(__('Are you sure you want to delete %s?', true), $activity['name']) . '")')
+                                                 ),
+                                    array('controller' => 'activities',
+                                          'action' => 'delete',
+                                          $course['Course']['id'],
+                                          $activity['id'],
+                                          'admin' => true),
+                                    array('escape' => false)
+                              );
+               ?>
 			</td>
 			<?php endif; ?>
 		</tr>

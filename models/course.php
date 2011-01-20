@@ -168,6 +168,7 @@ class Course extends AppModel {
                ),
          ),
          'fields' => array(
+            'Course.*',
             'Group.*',
             'Student.*',
             'User.*'
@@ -190,6 +191,36 @@ class Course extends AppModel {
       }
 
       return $result;
+   }
+
+   function deleteStudent($course_id, $student_id) {
+      $group = $this->Group->find('first', array(
+         'conditions' => array('Group.course_id' => $course_id, 'Student.id' => $student_id),
+         'contain' => array('Group', 'Student')));
+   }
+
+   function deleteStudents($course_id, $student_ids) {
+      $groups = $this->Group->find('all', array(
+         'conditions' => array('course_id' => $course_id),
+         'contain' => array('Student')));
+      foreach($groups as $group) {
+         $group_students = array();
+         foreach($group['Student'] as $key => $student) {
+            $group_students[$key] = $student['id'];
+         }
+         $intersect = array_intersect($group_students, $student_ids);
+         if (count($intersect) > 0) {
+            if (count($intersect) == count($group_students)) {
+               // This will automatically remove the records in the join table.
+               $this->Group->delete($group['Group']['id']);
+            }
+            else {
+               unset($group['Student']);
+               $group['Student']['Student'] = array_diff($group_students, $student_ids);
+               $this->Group->save($group);
+            }
+         }
+      }
    }
 
    function isStudentInCourse($course_id, $student_id) {

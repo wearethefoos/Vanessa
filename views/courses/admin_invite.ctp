@@ -66,7 +66,7 @@
    function send_emails_to_selected_students() {
       var emails = [];
       $$('input.selected').each(function (item){if (item.checked) {emails.push(item.readAttribute('email'))}});
-      window.location = "mailto:" + emails.join(';');
+      window.location = "mailto:<?php echo $email ?>?bcc=" + emails.join(';');
    }
    
    function select_all(checked) {
@@ -87,7 +87,7 @@
 
 </script>
 <div class="courses">
-	<h3 class="pink"><?php __('Invite Students') ?></h3>
+	<h3 class="pink"><?php echo __('Invite Students for course ', true) . $this->data['Course']['name'] ?></h3>
 	<?php
       $students_not_found = '';
       if (isset($studentsnotfound)) {
@@ -97,6 +97,7 @@
       }
 		echo $this->Form->create('Course');
 		echo $this->Form->input('id');
+		echo $this->Form->input('name', array('type' => 'hidden'));
 		echo $this->Form->input('students', array(
          'value' => $students_not_found,
 			'type' => 'textarea', 
